@@ -28,11 +28,11 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         auth = FirebaseAuth.getInstance()
 
-        btAuth.setOnClickListener {
+        buttonAuth.setOnClickListener {
             val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.firebase_auth_id))
-                .requestEmail()
-                .build()
+                    .requestIdToken(getString(R.string.firebase_auth_id))
+                    .requestEmail()
+                    .build()
             val signInClient = GoogleSignIn.getClient(this, options)
             signInClient.signInIntent.also {
                 startActivityForResult(it, REQUEST_CODE_SIGN_IN)
@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if( requestCode == REQUEST_CODE_SIGN_IN){
+        if (requestCode == REQUEST_CODE_SIGN_IN) {
             val account = GoogleSignIn.getSignedInAccountFromIntent(data).result
             account?.let {
                 googleAuthForFirebase(it)
@@ -57,8 +57,8 @@ class LoginActivity : AppCompatActivity() {
                 auth.signInWithCredential(credentials).await()
                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                 finish()
-            }catch (e: Exception){
-                withContext(Dispatchers.Main){
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
                     Toast.makeText(this@LoginActivity, e.message, Toast.LENGTH_LONG).show()
                 }
             }
