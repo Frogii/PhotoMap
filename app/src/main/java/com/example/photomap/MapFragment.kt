@@ -1,16 +1,20 @@
 package com.example.photomap
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.GoogleMap
 import kotlinx.android.synthetic.main.fragment_map.*
 
 class MapFragment : Fragment() {
 
     private var myMap: GoogleMap? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,6 +30,20 @@ class MapFragment : Fragment() {
         mapView.getMapAsync {
             myMap = it
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_map_fragment, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.action_categories -> findNavController().navigate(
+                R.id.action_mapFragment_to_categoriesFragment
+            )
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -57,6 +75,4 @@ class MapFragment : Fragment() {
         super.onLowMemory()
         mapView?.onLowMemory()
     }
-
-
 }

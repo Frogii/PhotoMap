@@ -1,13 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CategoriesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <CheckBox
+        android:id="@+id/checkBoxNature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:paddingLeft="16dp"
+        android:button="@drawable/check_box_selector"
+        app:buttonTint="@color/green_check_box"
+        android:text="@string/nature_checkbox"
+        android:textColor="@color/green_check_box"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <CheckBox
+        android:id="@+id/checkBoxFriends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:paddingLeft="16dp"
+        android:button="@drawable/check_box_selector"
+        android:buttonTint="@color/pink_check_box"
+        android:text="@string/friends_checkbox"
+        android:textColor="@color/pink_check_box"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxNature" />
+
+    <CheckBox
+        android:id="@+id/checkBoxDefault"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:paddingLeft="16dp"
+        android:button="@drawable/check_box_selector"
+        android:buttonTint="@color/blue_check_box"
+        android:text="@string/default_checkbox"
+        android:textColor="@color/blue_check_box"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxFriends" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
