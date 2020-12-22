@@ -1,12 +1,15 @@
-package com.example.photomap
+package com.example.photomap.ui.fragments
 
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.example.photomap.R
+import kotlinx.android.synthetic.main.activity_main.*
 
 
-class TimeLineFragment : Fragment() {
+class CategoriesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -14,22 +17,20 @@ class TimeLineFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_time_line, container, false)
+        return inflater.inflate(R.layout.fragment_categories, container, false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_timeline_fragment, menu)
+        inflater.inflate(R.menu.menu_categories_fragment, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.action_categories -> findNavController().navigate(
-                R.id.action_timeLineFragment_to_categoriesFragment
-            )
+            android.R.id.home -> findNavController().navigateUp()
         }
         return super.onOptionsItemSelected(item)
     }

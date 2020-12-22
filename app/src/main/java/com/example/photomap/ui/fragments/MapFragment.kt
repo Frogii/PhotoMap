@@ -1,11 +1,13 @@
-package com.example.photomap
+package com.example.photomap.ui.fragments
 
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.photomap.R
 import com.google.android.gms.maps.GoogleMap
 import kotlinx.android.synthetic.main.fragment_map.*
+
 
 class MapFragment : Fragment() {
 

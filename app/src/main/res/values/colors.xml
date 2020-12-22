@@ -10,4 +10,5 @@
     <color name="green_check_box">#388E3C</color>
     <color name="pink_check_box">#FF0068</color>
     <color name="blue_check_box">#03A9F4</color>
+    <color name="description_text">#FF000000</color>
 </resources>

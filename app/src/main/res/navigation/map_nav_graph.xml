@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.example.photomap.MapFragment"
-        android:label="fragment_map"
-        tools:layout="@layout/fragment_map" >
+        android:name="com.example.photomap.ui.fragments.MapFragment"
+        android:label="PhotoMap"
+        tools:layout="@layout/fragment_map">
         <action
             android:id="@+id/action_mapFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />
@@ -19,9 +19,9 @@
     </fragment>
     <fragment
         android:id="@+id/timeLineFragment"
-        android:name="com.example.photomap.TimeLineFragment"
-        android:label="fragment_time_line"
-        tools:layout="@layout/fragment_time_line" >
+        android:name="com.example.photomap.ui.fragments.TimeLineFragment"
+        android:label="Timeline"
+        tools:layout="@layout/fragment_time_line">
         <action
             android:id="@+id/action_timeLineFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />
@@ -31,21 +31,21 @@
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.example.photomap.DetailsFragment"
-        android:label="fragment_details"
-        tools:layout="@layout/fragment_details" >
+        android:name="com.example.photomap.ui.fragments.DetailsFragment"
+        android:label="Photo Details"
+        tools:layout="@layout/fragment_details">
         <action
             android:id="@+id/action_detailsFragment_to_photoFragment"
             app:destination="@id/photoFragment" />
     </fragment>
     <fragment
         android:id="@+id/photoFragment"
-        android:name="com.example.photomap.PhotoFragment"
-        android:label="fragment_photo"
+        android:name="com.example.photomap.ui.fragments.PhotoFragment"
+        android:label="Photo"
         tools:layout="@layout/fragment_photo" />
     <fragment
         android:id="@+id/categoriesFragment"
-        android:name="com.example.photomap.CategoriesFragment"
-        android:label="fragment_categories"
+        android:name="com.example.photomap.ui.fragments.CategoriesFragment"
+        android:label="Categories"
         tools:layout="@layout/fragment_categories" />
 </navigation>
