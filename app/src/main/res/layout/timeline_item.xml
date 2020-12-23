@@ -13,10 +13,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
+        android:textSize="@dimen/main_text"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="I make this photo then I walk on street"
-        android:textColor="@color/description_text"
+        android:textColor="@color/black_text"
         app:layout_constraintStart_toEndOf="@+id/imageViewMapPhoto"
         app:layout_constraintTop_toTopOf="@+id/imageViewMapPhoto" />
 

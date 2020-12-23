@@ -27,7 +27,9 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this, navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.categoriesFragment) {
+            if (destination.id == R.id.categoriesFragment || destination.id == R.id.detailsFragment ||
+                destination.id == R.id.photoFragment
+            ) {
                 bottomNavView.visibility = View.GONE
             } else {
                 bottomNavView.visibility = View.VISIBLE

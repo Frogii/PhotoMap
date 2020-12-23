@@ -12,11 +12,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class TimelineRecAdapter : RecyclerView.Adapter<TimelineRecAdapter.TimelineViewHolder>() {
+class TimelineRecAdapter(val clickableRecycler: ClickableRecycler) :
+    RecyclerView.Adapter<TimelineRecAdapter.TimelineViewHolder>() {
 
     private var markList: List<MapMark> = ArrayList()
 
-    fun setList(list: List<MapMark>){
+    fun setList(list: List<MapMark>) {
         this.markList = list
     }
 
@@ -43,6 +44,10 @@ class TimelineRecAdapter : RecyclerView.Adapter<TimelineRecAdapter.TimelineViewH
             textViewDescription.text = mapPhotoItem.description
             textViewDate.text = dayTime
             textViewCategory.text = mapPhotoItem.category
+
+            this.setOnClickListener {
+                clickableRecycler.onItemClick()
+            }
         }
     }
 

@@ -6,13 +6,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.photomap.R
+import com.example.photomap.adapter.ClickableRecycler
 import com.example.photomap.adapter.TimelineRecAdapter
 import com.example.photomap.util.TestData
 import kotlinx.android.synthetic.main.fragment_time_line.*
 import java.util.*
 
 
-class TimeLineFragment : Fragment() {
+class TimeLineFragment : Fragment(), ClickableRecycler {
 
     lateinit var timelineAdapter: TimelineRecAdapter
 
@@ -37,7 +38,7 @@ class TimeLineFragment : Fragment() {
     }
 
     private fun setupRecycler() {
-        timelineAdapter = TimelineRecAdapter()
+        timelineAdapter = TimelineRecAdapter(this)
         recyclerViewTimeline.apply {
             adapter = timelineAdapter
             layoutManager = LinearLayoutManager(this@TimeLineFragment.context)
@@ -54,7 +55,12 @@ class TimeLineFragment : Fragment() {
             R.id.action_categories -> findNavController().navigate(
                 R.id.action_timeLineFragment_to_categoriesFragment
             )
+            android.R.id.home -> findNavController().navigateUp()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onItemClick() {
+        findNavController().navigate(R.id.action_timeLineFragment_to_detailsFragment)
     }
 }

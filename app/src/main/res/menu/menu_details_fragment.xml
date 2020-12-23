@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/action_done_categories"
+    <item android:id="@+id/action_done_details"
         android:title="@string/done_menu_item"
         android:icon="@drawable/ic_done"
         app:showAsAction="always"/>
