@@ -1,7 +1,6 @@
 package com.example.photomap.ui
 
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -21,9 +20,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
-        navController = Navigation.findNavController(this, R.id.navHostFragment)
+        navController = Navigation.findNavController(this, R.id.mainNavHostFragment)
 
-        bottomNavView.setupWithNavController(navHostFragment.findNavController())
+        bottomNavView.setupWithNavController(mainNavHostFragment.findNavController())
         NavigationUI.setupActionBarWithNavController(this, navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->

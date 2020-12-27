@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="primaryColor">#00b9e7</color>
+    <color name="primaryDarkColor">#0089b5</color>
+    <color name="secondaryColor">#ff0067</color>
+    <color name="secondaryDarkColor">#c5003d</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -13,4 +17,5 @@
     <color name="black_text">#FF000000</color>
     <color name="photo_background">#FF000000</color>
     <color name="white_text">#FFFFFFFF</color>
+    <color name="black_transparent_status">#66000000</color>
 </resources>

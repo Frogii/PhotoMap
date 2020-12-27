@@ -1,5 +1,6 @@
 package com.example.photomap.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.photomap.R
 import com.example.photomap.adapter.ClickableRecycler
 import com.example.photomap.adapter.TimelineRecAdapter
+import com.example.photomap.ui.DetailsActivity
 import com.example.photomap.util.TestData
 import kotlinx.android.synthetic.main.fragment_time_line.*
 import java.util.*
@@ -61,6 +63,6 @@ class TimeLineFragment : Fragment(), ClickableRecycler {
     }
 
     override fun onItemClick() {
-        findNavController().navigate(R.id.action_timeLineFragment_to_detailsFragment)
+        startActivity(Intent(this.context, DetailsActivity::class.java))
     }
 }

@@ -11,9 +11,6 @@
         android:label="PhotoMap"
         tools:layout="@layout/fragment_map">
         <action
-            android:id="@+id/action_mapFragment_to_detailsFragment"
-            app:destination="@id/detailsFragment" />
-        <action
             android:id="@+id/action_mapFragment_to_categoriesFragment"
             app:destination="@id/categoriesFragment" />
     </fragment>
@@ -23,26 +20,9 @@
         android:label="Timeline"
         tools:layout="@layout/fragment_time_line">
         <action
-            android:id="@+id/action_timeLineFragment_to_detailsFragment"
-            app:destination="@id/detailsFragment" />
-        <action
             android:id="@+id/action_timeLineFragment_to_categoriesFragment"
             app:destination="@id/categoriesFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/detailsFragment"
-        android:name="com.example.photomap.ui.fragments.DetailsFragment"
-        android:label="Photo Details"
-        tools:layout="@layout/fragment_details">
-        <action
-            android:id="@+id/action_detailsFragment_to_photoFragment"
-            app:destination="@id/photoFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/photoFragment"
-        android:name="com.example.photomap.ui.fragments.PhotoFragment"
-        android:label="Photo"
-        tools:layout="@layout/fragment_photo" />
     <fragment
         android:id="@+id/categoriesFragment"
         android:name="com.example.photomap.ui.fragments.CategoriesFragment"

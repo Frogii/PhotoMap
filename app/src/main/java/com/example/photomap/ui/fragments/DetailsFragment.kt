@@ -1,7 +1,11 @@
 package com.example.photomap.ui.fragments
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -39,6 +43,12 @@ class DetailsFragment : Fragment() {
             .into(imageViewDetailsPhoto)
     }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.title = ""
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_details_fragment, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -47,10 +57,8 @@ class DetailsFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_done_details -> findNavController().navigateUp()
-            android.R.id.home -> findNavController().navigateUp()
+            android.R.id.home -> activity?.finish()
         }
         return super.onOptionsItemSelected(item)
     }
-
-
 }
