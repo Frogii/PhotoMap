@@ -27,7 +27,7 @@
         android:gravity="center"
         android:text="24.01.2001"
         android:textColor="@color/black_text"
-        android:textSize="@dimen/main_text"
+        android:textSize="@dimen/main_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewDetailsPhoto" />
 

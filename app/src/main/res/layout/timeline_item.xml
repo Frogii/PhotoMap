@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:textSize="@dimen/main_text"
+        android:textSize="@dimen/main_text_size"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="I make this photo then I walk on street"

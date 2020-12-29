@@ -6,8 +6,6 @@
     <string name="welcome_text">Welcome to Photo Map</string>
     <string name="search_menu_item">Search</string>
     <string name="categories_menu_item">Categories</string>
-    <string name="friends_checkbox">  Friends</string>
-    <string name="nature_checkbox">  Nature</string>
-    <string name="default_checkbox">  Default</string>
+    <string name="default_checkbox">Default</string>
     <string name="done_menu_item">Done</string>
 </resources>

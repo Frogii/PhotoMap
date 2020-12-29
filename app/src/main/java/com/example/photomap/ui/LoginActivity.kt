@@ -18,11 +18,13 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 
-const val REQUEST_CODE_SIGN_IN = 0
-
 class LoginActivity : AppCompatActivity() {
 
-    lateinit var auth: FirebaseAuth
+    companion object{
+        const val REQUEST_CODE_SIGN_IN = 0
+    }
+
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

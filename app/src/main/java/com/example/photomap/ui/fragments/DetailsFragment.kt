@@ -45,8 +45,10 @@ class DetailsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        (activity as AppCompatActivity).supportActionBar?.title = ""
+        (activity as AppCompatActivity).supportActionBar?.let { supportActionBar ->
+            supportActionBar.setDisplayHomeAsUpEnabled(true)
+            supportActionBar.title = ""
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

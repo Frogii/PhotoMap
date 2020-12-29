@@ -4,6 +4,7 @@ import com.example.photomap.model.MapMark
 import java.util.*
 
 class TestData {
+
     companion object{
         val data = listOf(
             MapMark(
