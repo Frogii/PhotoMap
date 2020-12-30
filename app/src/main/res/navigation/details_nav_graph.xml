@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/detailsFragment"
         android:name="com.example.photomap.ui.fragments.DetailsFragment"
-        android:label="fragment_details"
         tools:layout="@layout/fragment_details" >
         <action
             android:id="@+id/action_detailsFragment_to_photoFragment"
@@ -17,6 +16,5 @@
     <fragment
         android:id="@+id/photoFragment"
         android:name="com.example.photomap.ui.fragments.PhotoFragment"
-        android:label="fragment_photo"
         tools:layout="@layout/fragment_photo" />
 </navigation>
