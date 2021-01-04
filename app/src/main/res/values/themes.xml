@@ -30,4 +30,16 @@
         <item name="android:layout_marginTop">@dimen/category_margin_top</item>
         <item name="android:layout_marginBottom">@dimen/category_margin_bottom</item>
     </style>
+
+    <style name="FloatingButtonPhoto" parent="Widget.Design.FloatingActionButton">
+        <item name="colorSecondary">@color/white</item>
+        <item name="colorOnSecondary">@color/floating_button_ic_photo</item>
+        <item name="android:src">@drawable/ic_floating_button_photo</item>
+    </style>
+
+    <style name="FloatingButtonFollow" parent="Widget.Design.FloatingActionButton">
+        <item name="colorSecondary">@color/floating_button_enable</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="android:src">@drawable/ic_floating_button_follow</item>
+    </style>
 </resources>
