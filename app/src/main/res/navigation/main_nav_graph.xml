@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/map_nav_graph"
+    app:startDestination="@id/mapFragment">
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.photomap.ui.fragments.MapFragment"
+        android:label="PhotoMap"
+        tools:layout="@layout/fragment_map">
+        <action
+            android:id="@+id/action_mapFragment_to_categoriesFragment"
+            app:destination="@id/categoriesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/timeLineFragment"
+        android:name="com.example.photomap.ui.fragments.TimeLineFragment"
+        android:label="Timeline"
+        tools:layout="@layout/fragment_time_line">
+        <action
+            android:id="@+id/action_timeLineFragment_to_categoriesFragment"
+            app:destination="@id/categoriesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/categoriesFragment"
+        android:name="com.example.photomap.ui.fragments.CategoriesFragment"
+        android:label="Categories"
+        tools:layout="@layout/fragment_categories" />
+</navigation>

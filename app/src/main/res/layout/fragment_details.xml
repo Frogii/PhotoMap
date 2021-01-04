@@ -1,14 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DetailsFragment">
+    tools:context=".ui.fragments.DetailsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ImageView
+        android:id="@+id/imageViewDetailsPhoto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="240dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/textViewDetailsDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:drawableStart="@drawable/ic_date"
+        android:drawablePadding="20dp"
+        android:gravity="center"
+        android:text="24.01.2001"
+        android:textColor="@color/black_text"
+        android:textSize="@dimen/main_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewDetailsPhoto" />
+
+    <TextView
+        android:id="@+id/textViewDetailsCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:drawableStart="@drawable/ic_map_mark"
+        android:drawablePadding="20dp"
+        android:gravity="center"
+        android:text="Nature"
+        android:textColor="@color/black_text"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDetailsDate" />
+
+    <ImageView
+        android:id="@+id/imageViewDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDetailsCategory" />
+
+    <TextView
+        android:id="@+id/textViewDetailsDescription"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="32dp"
+        android:text="Фото дороги на фоне гор получилось очень красивым"
+        android:textAlignment="inherit"
+        android:textColor="@color/black_text"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/imageViewDescription"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDetailsCategory" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

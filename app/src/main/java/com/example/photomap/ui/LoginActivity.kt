@@ -1,9 +1,10 @@
-package com.example.photomap
+package com.example.photomap.ui
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.photomap.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -15,13 +16,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 
-const val REQUEST_CODE_SIGN_IN = 0
 
 class LoginActivity : AppCompatActivity() {
 
-    lateinit var auth: FirebaseAuth
+    companion object{
+        const val REQUEST_CODE_SIGN_IN = 0
+    }
+
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,9 +33,9 @@ class LoginActivity : AppCompatActivity() {
 
         buttonAuth.setOnClickListener {
             val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.firebase_auth_id))
-                    .requestEmail()
-                    .build()
+                .requestIdToken(getString(R.string.firebase_auth_id))
+                .requestEmail()
+                .build()
             val signInClient = GoogleSignIn.getClient(this, options)
             signInClient.signInIntent.also {
                 startActivityForResult(it, REQUEST_CODE_SIGN_IN)
