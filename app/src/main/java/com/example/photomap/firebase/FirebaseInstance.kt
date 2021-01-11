@@ -9,6 +9,6 @@ class FirebaseInstance {
 
     companion object {
         val fireStoreDB = Firebase.firestore.collection(MAP_MARK_COLLECTION)
-        private val fireBaseImageStorage = Firebase.storage.reference
+        val fireBaseImageStorage = Firebase.storage.reference
     }
 }
