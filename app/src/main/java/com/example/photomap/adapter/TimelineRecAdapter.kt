@@ -1,25 +1,22 @@
 package com.example.photomap.adapter
 
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.photomap.R
-import com.example.photomap.model.MapMark
+import com.example.photomap.model.TestMapMark
 import com.example.photomap.util.AppDateUtils
 import kotlinx.android.synthetic.main.timeline_item.view.*
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 class TimelineRecAdapter(private val clickableRecycler: ClickableRecycler) :
     RecyclerView.Adapter<TimelineRecAdapter.TimelineViewHolder>() {
 
-    private var markList: List<MapMark> = ArrayList()
+    private var markList: List<TestMapMark> = ArrayList()
 
-    fun setList(list: List<MapMark>) {
+    fun setList(list: List<TestMapMark>) {
         this.markList = list
     }
 

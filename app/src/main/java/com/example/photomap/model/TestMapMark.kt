@@ -2,7 +2,7 @@ package com.example.photomap.model
 
 import java.util.*
 
-data class MapMark(
+data class TestMapMark(
     var photoUrl: String,
     var description: String,
     var date: Date,
