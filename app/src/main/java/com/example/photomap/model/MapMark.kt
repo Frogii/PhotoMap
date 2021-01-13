@@ -3,6 +3,7 @@ package com.example.photomap.model
 data class MapMark(
     val name: String = "",
     val url: String = "",
+    val date: String = "9.01.2021",
     var description: String = "Best photo",
     var categery: String = "Default",
     var imageLatitude: Double = 0.0,

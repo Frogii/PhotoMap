@@ -10,7 +10,9 @@ import com.example.photomap.R
 import com.example.photomap.adapter.ClickableRecycler
 import com.example.photomap.adapter.TimelineRecAdapter
 import com.example.photomap.ui.DetailsActivity
-import com.example.photomap.util.TestData
+import com.example.photomap.ui.MainActivity
+import com.example.photomap.ui.MainViewModel
+import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.fragment_time_line.*
 import java.util.*
 
@@ -18,6 +20,7 @@ import java.util.*
 class TimeLineFragment : Fragment(), ClickableRecycler {
 
     lateinit var timelineAdapter: TimelineRecAdapter
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +38,11 @@ class TimeLineFragment : Fragment(), ClickableRecycler {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecycler()
-        timelineAdapter.setList(TestData.data)
-
+        mainViewModel = (activity as MainActivity).mainViewModel
+        mainViewModel.dataList.observe(viewLifecycleOwner, {
+            timelineAdapter.setList(it)
+            }
+        )
     }
 
     private fun setupRecycler() {

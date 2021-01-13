@@ -14,12 +14,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 
-class TimeLineViewModel : ViewModel() {
+class MainViewModel : ViewModel() {
 
-    private val mapMarkList: MutableLiveData<MapMark> = MutableLiveData()
+    val dataList: MutableLiveData<List<MapMark>> = MutableLiveData()
 
     init {
         downloadAllData()
+
     }
 
     fun uploadMapMark(imageFile: Uri, imageName: String) {
@@ -30,7 +31,8 @@ class TimeLineViewModel : ViewModel() {
                     val imageUrl = fireBaseImageStorage.child("$STORAGE_PATH$imageName")
                         .downloadUrl.await().toString()
                     fireStoreDB.add(MapMark(name = imageName, url = imageUrl))
-                    Log.d("ViewModelLog", "image uploaded".toString())
+                    Log.d("ViewModelLog", "image uploaded")
+                    downloadAllData()
                 }
             } catch (e: Exception) {
                 Log.d("ViewModelLog", e.message.toString())
@@ -39,13 +41,16 @@ class TimeLineViewModel : ViewModel() {
     }
 
     fun downloadAllData() {
+        val dataList = mutableListOf<MapMark>()
         viewModelScope.launch {
             val querySnapshot = fireStoreDB.get().await()
             var mapMark: MapMark
             for (document in querySnapshot.documents) {
                     mapMark = document.toObject<MapMark>()!!
-                    mapMarkList.postValue(mapMark)
+                    dataList.add(mapMark)
             }
+            Log.d("ViewModelLog", "download" )
+            this@MainViewModel.dataList.postValue(dataList)
         }
     }
 

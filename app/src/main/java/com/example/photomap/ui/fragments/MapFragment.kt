@@ -1,8 +1,10 @@
 package com.example.photomap.ui.fragments
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.*
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -10,6 +12,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.photomap.R
+import com.example.photomap.ui.MainActivity
+import com.example.photomap.ui.MainViewModel
+import com.example.photomap.util.Constants
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -22,6 +27,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private var mapViewBundle: Bundle? = null
     private lateinit var map: GoogleMap
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +47,26 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapView.onCreate(mapViewBundle)
         mapView.getMapAsync(this)
 
+        mainViewModel = (activity as MainActivity).mainViewModel
+
+        floatingButtonPhoto.setOnClickListener {
+            Intent(
+                Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            )
+                .also {
+                    startActivityForResult(it, Constants.REQUEST_CODE_IMAGE_PICK)
+                }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        data?.data?.let {
+            val file = it
+            val fileName = it.pathSegments.last()
+            mainViewModel.uploadMapMark(file, fileName)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

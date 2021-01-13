@@ -6,18 +6,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.photomap.R
-import com.example.photomap.model.TestMapMark
-import com.example.photomap.util.AppDateUtils
+import com.example.photomap.model.MapMark
 import kotlinx.android.synthetic.main.timeline_item.view.*
 import kotlin.collections.ArrayList
 
 class TimelineRecAdapter(private val clickableRecycler: ClickableRecycler) :
     RecyclerView.Adapter<TimelineRecAdapter.TimelineViewHolder>() {
 
-    private var markList: List<TestMapMark> = ArrayList()
+    private var markList: List<MapMark> = ArrayList()
 
-    fun setList(list: List<TestMapMark>) {
+    fun setList(list: List<MapMark>) {
         this.markList = list
+        notifyDataSetChanged()
     }
 
     class TimelineViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -33,13 +33,13 @@ class TimelineRecAdapter(private val clickableRecycler: ClickableRecycler) :
         holder.itemView.apply {
             Glide
                 .with(this)
-                .load(markList[position].photoUrl)
+                .load(markList[position].url)
                 .circleCrop()
                 .into(imageViewMapPhoto)
 
             textViewDescription.text = markList[position].description
-            textViewDate.text = AppDateUtils.formatDate(markList[position].date, AppDateUtils.detailsDatePattern)
-            textViewCategory.text = markList[position].category
+            textViewDate.text = markList[position].date
+            textViewCategory.text = markList[position].categery
 
             this.setOnClickListener {
                 clickableRecycler.onItemClick()
