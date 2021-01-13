@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.photomap.R
+import com.example.photomap.repository.MapMarkRepository
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -22,8 +23,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val timeLineViewModelProviderFactory = TimeLineViewModelProviderFactory()
-        mainViewModel = ViewModelProvider(this, timeLineViewModelProviderFactory).get(MainViewModel::class.java)
+        val timeLineViewModelProviderFactory = MainViewModelProviderFactory(MapMarkRepository())
+        mainViewModel =
+            ViewModelProvider(this, timeLineViewModelProviderFactory).get(MainViewModel::class.java)
 
         navController = Navigation.findNavController(this, R.id.mainNavHostFragment)
         bottomNavView.setupWithNavController(mainNavHostFragment.findNavController())
