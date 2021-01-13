@@ -129,18 +129,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun getMyLocation() {
-        if (ContextCompat.checkSelfPermission(
-                this.context!!,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
+        if (this.context?.let {
+                ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION)
+            } == PackageManager.PERMISSION_GRANTED
         ) {
             map.isMyLocationEnabled = true
         } else {
-            ActivityCompat.requestPermissions(
-                this.activity!!,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST
-            )
+            this.activity?.let {
+                ActivityCompat.requestPermissions(it, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    LOCATION_PERMISSION_REQUEST
+                )
+            }
         }
     }
 
