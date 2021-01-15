@@ -1,10 +1,13 @@
 package com.example.photomap.ui.fragments
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -14,7 +17,11 @@ import androidx.navigation.fragment.findNavController
 import com.example.photomap.R
 import com.example.photomap.ui.MainActivity
 import com.example.photomap.ui.MainViewModel
+import com.example.photomap.ui.dialog.ChoosePhotoDialog
+import com.example.photomap.ui.dialog.DialogClickListener
 import com.example.photomap.util.Constants
+import com.example.photomap.util.Constants.REQUEST_CODE_IMAGE_PICK
+import com.example.photomap.util.Constants.REQUEST_CODE_TAKE_PHOTO
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -50,22 +57,44 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mainViewModel = (activity as MainActivity).mainViewModel
 
         floatingButtonPhoto.setOnClickListener {
-            Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            )
-                .also {
-                    startActivityForResult(it, Constants.REQUEST_CODE_IMAGE_PICK)
+            ChoosePhotoDialog(activity as MainActivity, object : DialogClickListener {
+                override fun chooseImage() {
+                    Intent(
+                        Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                    )
+                        .also {
+                            startActivityForResult(it, REQUEST_CODE_IMAGE_PICK)
+                        }
                 }
+
+                override fun takePhoto() {
+                    Intent(
+                        Intent("android.media.action.IMAGE_CAPTURE")
+                    ).also {
+                        startActivityForResult(it, REQUEST_CODE_TAKE_PHOTO)
+                    }
+                }
+            }).show()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        data?.data?.let {
-            val file = it
-            val fileName = it.pathSegments.last()
-            mainViewModel.uploadMapMark(file, fileName)
+        if (requestCode == REQUEST_CODE_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+            Log.d("myLog", "taking photo from camera")
+            Log.d("myLog", data.toString())
+            data?.let {
+                val file = it.extras?.get("data") as Bitmap
+
+            }
+        } else if (requestCode == REQUEST_CODE_IMAGE_PICK) {
+            data?.data?.let {
+                Log.d("myLog", "taking photo from gallery")
+                val file = it
+                val fileName = it.pathSegments.last()
+                mainViewModel.uploadMapMark(file, fileName)
+            }
         }
     }
 
@@ -136,7 +165,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             map.isMyLocationEnabled = true
         } else {
             this.activity?.let {
-                ActivityCompat.requestPermissions(it, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                ActivityCompat.requestPermissions(
+                    it, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                     LOCATION_PERMISSION_REQUEST
                 )
             }

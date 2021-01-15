@@ -8,4 +8,6 @@
     <string name="categories_menu_item">Categories</string>
     <string name="default_checkbox">Default</string>
     <string name="done_menu_item">Done</string>
+    <string name="dialog_choose_from_gallery">Choose from Gallery</string>
+    <string name="dialog_take_a_picture">Take a picture</string>
 </resources>
