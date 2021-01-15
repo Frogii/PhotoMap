@@ -10,7 +10,7 @@ import com.example.photomap.model.MapMark
 import kotlinx.android.synthetic.main.timeline_item.view.*
 import kotlin.collections.ArrayList
 
-class TimelineRecAdapter(private val clickableRecycler: ClickableRecycler) :
+class TimelineRecAdapter(private val clickableRecyclerItem: ClickableRecyclerItem) :
     RecyclerView.Adapter<TimelineRecAdapter.TimelineViewHolder>() {
 
     private var markList: List<MapMark> = ArrayList()
@@ -42,7 +42,7 @@ class TimelineRecAdapter(private val clickableRecycler: ClickableRecycler) :
             textViewCategory.text = markList[position].categery
 
             this.setOnClickListener {
-                clickableRecycler.onItemClick()
+                clickableRecyclerItem.onItemClick(markList[position])
             }
         }
     }

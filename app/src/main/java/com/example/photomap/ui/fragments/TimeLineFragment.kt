@@ -7,17 +7,19 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.photomap.R
-import com.example.photomap.adapter.ClickableRecycler
+import com.example.photomap.adapter.ClickableRecyclerItem
 import com.example.photomap.adapter.TimelineRecAdapter
+import com.example.photomap.model.MapMark
 import com.example.photomap.ui.DetailsActivity
 import com.example.photomap.ui.MainActivity
 import com.example.photomap.ui.MainViewModel
+import com.example.photomap.util.Constants.ITEM_FROM_RECYCLER
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.fragment_time_line.*
 import java.util.*
 
 
-class TimeLineFragment : Fragment(), ClickableRecycler {
+class TimeLineFragment : Fragment(), ClickableRecyclerItem {
 
     lateinit var timelineAdapter: TimelineRecAdapter
     private lateinit var mainViewModel: MainViewModel
@@ -68,7 +70,9 @@ class TimeLineFragment : Fragment(), ClickableRecycler {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onItemClick() {
-        startActivity(Intent(this.context, DetailsActivity::class.java))
+    override fun onItemClick(item: MapMark) {
+        startActivity(Intent(this.context, DetailsActivity::class.java).also {
+            it.putExtra(ITEM_FROM_RECYCLER, item)
+        })
     }
 }

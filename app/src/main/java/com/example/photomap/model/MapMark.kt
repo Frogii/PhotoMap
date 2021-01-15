@@ -1,5 +1,8 @@
 package com.example.photomap.model
 
+import java.io.Serializable
+
+
 data class MapMark(
     val name: String = "",
     val url: String = "",
@@ -8,4 +11,4 @@ data class MapMark(
     var categery: String = "Default",
     var imageLatitude: Double = 0.0,
     var imageLongitude: Double = 0.0
-)
+): Serializable
