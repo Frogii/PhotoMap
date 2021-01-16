@@ -17,11 +17,13 @@ class DetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setTheme(R.style.TransparentTheme)
         setContentView(R.layout.activity_details)
-
+        val mapMark = intent.getSerializableExtra(ITEM_FROM_RECYCLER)
         navController = Navigation.findNavController(this, R.id.detailsNavHostFragment)
+        //WOW it works... sending data to fragment from activity by using navigation
+        navController.setGraph(
+            R.navigation.details_nav_graph,
+            Bundle().also { it.putSerializable(ITEM_FROM_RECYCLER, mapMark) })
         NavigationUI.setupActionBarWithNavController(this, navController)
-
-        val item = intent.getSerializableExtra(ITEM_FROM_RECYCLER)
-        Log.d("myLog", item.toString())
+        Log.d("myLog", mapMark.toString())
     }
 }

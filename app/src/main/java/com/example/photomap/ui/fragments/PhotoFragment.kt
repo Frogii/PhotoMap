@@ -1,15 +1,17 @@
 package com.example.photomap.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.photomap.R
+import com.example.photomap.model.MapMark
+import com.example.photomap.util.Constants.ITEM_FROM_RECYCLER
 import kotlinx.android.synthetic.main.fragment_photo.*
 
 
@@ -30,12 +32,10 @@ class PhotoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hideTextView()
+        val mapMark = this.arguments?.getSerializable(ITEM_FROM_RECYCLER) as MapMark
         Glide
             .with(this)
-            .load(
-                "https://sun9-46.userapi.com/impg/PeODZgO8Cl6f3z25_x_X-v7a4Xzak7p1DJ-qkg/oKzBDoVYtfU.jpg?" +
-                        "size=2400x1600&quality=96&proxy=1&sign=f73a6c72416abc6fa6d5185b55bd537c&type=album"
-            )
+            .load(mapMark.url)
             .into(imageViewFullPhoto)
     }
 

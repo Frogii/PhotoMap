@@ -1,15 +1,15 @@
 package com.example.photomap.ui.fragments
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.photomap.R
+import com.example.photomap.model.MapMark
+import com.example.photomap.util.Constants.ITEM_FROM_RECYCLER
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
@@ -30,16 +30,20 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val mapMark = this.arguments?.getSerializable(ITEM_FROM_RECYCLER) as MapMark
+        Log.d("myLog", mapMark.toString())
+
         imageViewDetailsPhoto.setOnClickListener {
-            findNavController().navigate(R.id.action_detailsFragment_to_photoFragment)
+            findNavController().navigate(
+                R.id.action_detailsFragment_to_photoFragment,
+                Bundle().also {
+                    it.putSerializable(ITEM_FROM_RECYCLER, mapMark)
+                })
         }
 
         Glide
             .with(this)
-            .load(
-                "https://sun9-17.userapi.com/impg/VtM3gvmnGVF082-nxJOKLDR24BE9aDoGkz7pUQ/ixnI_gW6-1Q.jpg?" +
-                        "size=1080x1350&quality=96&proxy=1&sign=c4f4c0b5c60b7b3df255495a8cb058ee&type=album"
-            )
+            .load(mapMark.url)
             .into(imageViewDetailsPhoto)
     }
 
