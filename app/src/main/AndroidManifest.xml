@@ -3,6 +3,8 @@
     package="com.example.photomap">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -11,6 +13,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PhotoMap">
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.photomap.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider" />
+        </provider>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -33,7 +45,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.DetailsActivity"/>
+        <activity android:name=".ui.DetailsActivity" />
     </application>
 
 </manifest>

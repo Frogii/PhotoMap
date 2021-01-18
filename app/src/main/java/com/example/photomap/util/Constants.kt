@@ -7,5 +7,6 @@ object Constants {
     const val REQUEST_CODE_IMAGE_PICK = 0
     const val REQUEST_CODE_TAKE_PHOTO = 1
     const val ITEM_FROM_RECYCLER = "recycler item"
+    const val FILE_PROVIDER_PATH = "com.example.photomap.fileprovider"
 
 }

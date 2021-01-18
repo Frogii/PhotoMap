@@ -4,7 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -12,6 +12,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.photomap.R
@@ -19,7 +20,8 @@ import com.example.photomap.ui.MainActivity
 import com.example.photomap.ui.MainViewModel
 import com.example.photomap.ui.dialog.ChoosePhotoDialog
 import com.example.photomap.ui.dialog.DialogClickListener
-import com.example.photomap.util.Constants
+import com.example.photomap.util.AppCameraUtils
+import com.example.photomap.util.Constants.FILE_PROVIDER_PATH
 import com.example.photomap.util.Constants.REQUEST_CODE_IMAGE_PICK
 import com.example.photomap.util.Constants.REQUEST_CODE_TAKE_PHOTO
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -28,6 +30,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_map.*
+import java.io.File
 
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -35,6 +38,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var mapViewBundle: Bundle? = null
     private lateinit var map: GoogleMap
     private lateinit var mainViewModel: MainViewModel
+    private var photoFile: File? = null
+    private lateinit var photoUri: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,9 +74,25 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
 
                 override fun takePhoto() {
+                    photoFile = this@MapFragment.activity?.let { activity ->
+                        AppCameraUtils.getPhotoFile(
+                            AppCameraUtils.createPhotoName(),
+                            activity
+                        )
+                    }
+                    val fileProvider = photoFile?.let { file ->
+                        this@MapFragment.activity?.let { activity ->
+                            FileProvider.getUriForFile(
+                                activity,
+                                FILE_PROVIDER_PATH,
+                                file
+                            )
+                        }
+                    }
                     Intent(
                         Intent("android.media.action.IMAGE_CAPTURE")
                     ).also {
+                        it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
                         startActivityForResult(it, REQUEST_CODE_TAKE_PHOTO)
                     }
                 }
@@ -81,14 +102,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        //taking photo from camera
         if (requestCode == REQUEST_CODE_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-            Log.d("myLog", "taking photo from camera")
-            Log.d("myLog", data.toString())
-            data?.let {
-                val file = it.extras?.get("data") as Bitmap
-
-            }
+            photoUri = Uri.fromFile(photoFile)
+            photoFile?.name?.let { mainViewModel.uploadMapMark(photoUri, it) }
         } else if (requestCode == REQUEST_CODE_IMAGE_PICK) {
+            //taking photo from gallery
             data?.data?.let {
                 Log.d("myLog", "taking photo from gallery")
                 val file = it
