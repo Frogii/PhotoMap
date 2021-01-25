@@ -3,17 +3,23 @@ package com.example.photomap.ui.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.photomap.R
 import com.example.photomap.model.MapMark
+import com.example.photomap.ui.DetailsActivity
+import com.example.photomap.ui.DetailsViewModel
 import com.example.photomap.util.Constants.ITEM_FROM_RECYCLER
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
 class DetailsFragment : Fragment() {
+
+    private lateinit var detailsViewModel: DetailsViewModel
+    private lateinit var mapMark: MapMark
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +36,9 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mapMark = this.arguments?.getSerializable(ITEM_FROM_RECYCLER) as MapMark
+        detailsViewModel = (activity as DetailsActivity).detailsViewModel
+
+        mapMark = this.arguments?.getSerializable(ITEM_FROM_RECYCLER) as MapMark
         Log.d("myLog", mapMark.toString())
 
         imageViewDetailsPhoto.setOnClickListener {
@@ -45,6 +53,9 @@ class DetailsFragment : Fragment() {
             .with(this)
             .load(mapMark.url)
             .into(imageViewDetailsPhoto)
+
+        editTextTextDetailsDescription.setText(mapMark.description)
+        textViewDetailsDate.text = mapMark.date
     }
 
     override fun onResume() {
@@ -62,7 +73,13 @@ class DetailsFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_done_details -> findNavController().navigateUp()
+            R.id.action_done_details -> {
+                if (mapMark.description != editTextTextDetailsDescription.text.toString()) {
+                    mapMark.description = editTextTextDetailsDescription.text.toString()
+                    detailsViewModel.updateMapMarkDescription(mapMark)
+                    Toast.makeText(this.context, "MapMark changed", Toast.LENGTH_SHORT).show()
+                } else Toast.makeText(this.context, "Nothing to change", Toast.LENGTH_SHORT).show()
+            }
             android.R.id.home -> activity?.finish()
         }
         return super.onOptionsItemSelected(item)

@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val timeLineViewModelProviderFactory = MainViewModelProviderFactory(MapMarkRepository())
+        val timeLineViewModelProviderFactory = MainViewModelProviderFactory(MapMarkRepository.instance)
         mainViewModel =
             ViewModelProvider(this, timeLineViewModelProviderFactory).get(MainViewModel::class.java)
 
@@ -40,5 +40,10 @@ class MainActivity : AppCompatActivity() {
                 bottomNavView.visibility = View.VISIBLE
             }
         }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        mainViewModel.getAllMapMarks()
     }
 }

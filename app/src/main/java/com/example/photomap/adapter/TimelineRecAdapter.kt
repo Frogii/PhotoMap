@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.photomap.R
 import com.example.photomap.model.MapMark
+import com.example.photomap.util.AppDateUtils
 import kotlinx.android.synthetic.main.timeline_item.view.*
-import kotlin.collections.ArrayList
 
 class TimelineRecAdapter(private val clickableRecyclerItem: ClickableRecyclerItem) :
     RecyclerView.Adapter<TimelineRecAdapter.TimelineViewHolder>() {
@@ -38,7 +38,7 @@ class TimelineRecAdapter(private val clickableRecyclerItem: ClickableRecyclerIte
                 .into(imageViewMapPhoto)
 
             textViewDescription.text = markList[position].description
-            textViewDate.text = markList[position].date
+            textViewDate.text = AppDateUtils.changeLongToShortPattern(markList[position].date)
             textViewCategory.text = markList[position].categery
 
             this.setOnClickListener {

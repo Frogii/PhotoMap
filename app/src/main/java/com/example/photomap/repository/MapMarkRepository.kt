@@ -5,9 +5,18 @@ import com.example.photomap.firebase.FirebaseInstance
 import com.example.photomap.model.MapMark
 import com.example.photomap.util.Constants.STORAGE_PATH
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 
-class MapMarkRepository {
+class MapMarkRepository private constructor() {
+
+    private object HOLDER {
+        val INSTANCE = MapMarkRepository()
+    }
+
+    companion object {
+        val instance: MapMarkRepository by lazy { HOLDER.INSTANCE }
+    }
 
     suspend fun uploadPhoto(imageFile: Uri, imageName: String) {
         FirebaseInstance.fireBaseImageStorage
@@ -27,5 +36,17 @@ class MapMarkRepository {
 
     suspend fun getAllMapMarks(): QuerySnapshot {
         return FirebaseInstance.fireStoreDB.get().await()
+    }
+
+    suspend fun getMapMark(mapMark: MapMark): QuerySnapshot {
+        return FirebaseInstance.fireStoreDB.whereEqualTo("name", mapMark.name).get().await()
+    }
+
+    suspend fun updateMapMark(mapMarkQuery: QuerySnapshot, newMapMarkMap: Map<String, Any>) {
+        for (document in mapMarkQuery)
+            FirebaseInstance.fireStoreDB.document(document.id).set(
+                newMapMarkMap,
+                SetOptions.merge()
+            ).await()
     }
 }

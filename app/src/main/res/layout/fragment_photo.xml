@@ -26,7 +26,7 @@
         android:layout_marginBottom="8dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="I make this photo then I walk on street"
+        android:text="@string/default_photo_description"
         android:textColor="@color/white_text"
         app:layout_constraintBottom_toTopOf="@+id/textViewFullPhotoDate"
         app:layout_constraintEnd_toEndOf="parent"

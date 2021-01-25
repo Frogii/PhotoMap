@@ -33,6 +33,8 @@ class PhotoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         hideTextView()
         val mapMark = this.arguments?.getSerializable(ITEM_FROM_RECYCLER) as MapMark
+        textViewFullPhotoDescription.text = mapMark.description
+        textViewFullPhotoDate.text = mapMark.date
         Glide
             .with(this)
             .load(mapMark.url)

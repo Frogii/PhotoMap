@@ -10,4 +10,5 @@
     <string name="done_menu_item">Done</string>
     <string name="dialog_choose_from_gallery">Choose from Gallery</string>
     <string name="dialog_take_a_picture">Take a picture</string>
+    <string name="default_photo_description">Default Description</string>
 </resources>

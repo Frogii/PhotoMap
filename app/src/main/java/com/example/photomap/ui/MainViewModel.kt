@@ -7,8 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.photomap.model.MapMark
 import com.example.photomap.repository.MapMarkRepository
+import com.example.photomap.util.AppDateUtils
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.launch
+import java.util.*
 
 class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewModel() {
 
@@ -25,7 +27,9 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
                 imageName.let {
                     mapMarkRepository.uploadPhoto(imageFile, imageName)
                     val imageUrl = mapMarkRepository.getImageUrl(imageName)
-                    val mark = MapMark(name = imageName, url = imageUrl)
+                    val mark = MapMark(name = imageName, url = imageUrl, date = AppDateUtils.formatDate(
+                        Date(), AppDateUtils.longPhotoDatePattern
+                    ))
                     mapMarkRepository.uploadMapMark(mark)
                     mapMarkList.add(mark)
                     dataList.postValue(mapMarkList)
@@ -39,6 +43,7 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
 
     fun getAllMapMarks() {
         viewModelScope.launch {
+            mapMarkList.clear()
             val querySnapshot = mapMarkRepository.getAllMapMarks()
             for (document in querySnapshot.documents) {
                 document.toObject<MapMark>()?.let {
