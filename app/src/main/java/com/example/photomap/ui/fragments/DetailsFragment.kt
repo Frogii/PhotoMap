@@ -12,6 +12,7 @@ import com.example.photomap.R
 import com.example.photomap.model.MapMark
 import com.example.photomap.ui.DetailsActivity
 import com.example.photomap.ui.DetailsViewModel
+import com.example.photomap.util.Constants.EMPTY_ACTION_BAR_TITLE
 import com.example.photomap.util.Constants.ITEM_FROM_RECYCLER
 import kotlinx.android.synthetic.main.fragment_details.*
 
@@ -62,7 +63,7 @@ class DetailsFragment : Fragment() {
         super.onResume()
         (activity as AppCompatActivity).supportActionBar?.let { supportActionBar ->
             supportActionBar.setDisplayHomeAsUpEnabled(true)
-            supportActionBar.title = ""
+            supportActionBar.title = EMPTY_ACTION_BAR_TITLE
         }
     }
 
@@ -77,8 +78,8 @@ class DetailsFragment : Fragment() {
                 if (mapMark.description != editTextTextDetailsDescription.text.toString()) {
                     mapMark.description = editTextTextDetailsDescription.text.toString()
                     detailsViewModel.updateMapMarkDescription(mapMark)
-                    Toast.makeText(this.context, "MapMark changed", Toast.LENGTH_SHORT).show()
-                } else Toast.makeText(this.context, "Nothing to change", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this.context, getString(R.string.map_mark_changed), Toast.LENGTH_SHORT).show()
+                } else Toast.makeText(this.context, getString(R.string.nothing_to_change), Toast.LENGTH_SHORT).show()
             }
             android.R.id.home -> activity?.finish()
         }

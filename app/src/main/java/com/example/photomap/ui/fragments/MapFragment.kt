@@ -76,7 +76,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 override fun takePhoto() {
                     photoFile = this@MapFragment.activity?.let { activity ->
                         AppCameraUtils.getPhotoFile(
-                            AppCameraUtils.createPhotoName(),
+                            AppCameraUtils.createPhotoName(activity),
                             activity
                         )
                     }
@@ -90,7 +90,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         }
                     }
                     Intent(
-                        Intent("android.media.action.IMAGE_CAPTURE")
+                        Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                     ).also {
                         it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
                         startActivityForResult(it, REQUEST_CODE_TAKE_PHOTO)
@@ -105,14 +105,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         //taking photo from camera
         if (requestCode == REQUEST_CODE_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             photoUri = Uri.fromFile(photoFile)
-            photoFile?.name?.let { mainViewModel.uploadMapMark(photoUri, it) }
+            photoFile?.name?.let { mainViewModel.uploadMapMark(photoUri, it.substring(0,22)) }
         } else if (requestCode == REQUEST_CODE_IMAGE_PICK) {
             //taking photo from gallery
             data?.data?.let {
                 Log.d("myLog", "taking photo from gallery")
                 val file = it
-                val fileName = it.pathSegments.last()
-                mainViewModel.uploadMapMark(file, fileName)
+                val fileName = this.activity?.let { activity -> AppCameraUtils.createPhotoName(activity) }
+                if (fileName != null) {
+                    mainViewModel.uploadMapMark(file, fileName)
+                }
             }
         }
     }
@@ -201,7 +203,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (grantResults.contains(PackageManager.PERMISSION_GRANTED)) {
                 getMyLocation()
             } else {
-                Toast.makeText(this.activity, "location permission not granted", Toast.LENGTH_SHORT)
+                Toast.makeText(this.activity, getString(R.string.location_permission_not_granted), Toast.LENGTH_SHORT)
                     .show()
             }
         }

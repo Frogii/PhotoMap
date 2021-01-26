@@ -7,15 +7,18 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.CompoundButtonCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.photomap.R
+import com.example.photomap.util.Constants.DEFAULT_CATEGORY
+import com.example.photomap.util.Constants.FRIENDS_CATEGORY
+import com.example.photomap.util.Constants.NATURE_CATEGORY
 import com.example.photomap.util.MarkCategory
 import kotlinx.android.synthetic.main.category_item.view.*
 
 class CategoriesRecAdapter : RecyclerView.Adapter<CategoriesRecAdapter.CategoriesViewHolder>() {
 
     private val categoriesList = listOf(
-        MarkCategory("Friends", R.color.pink_check_box),
-        MarkCategory("Nature", R.color.green_check_box),
-        MarkCategory("Default", R.color.blue_check_box)
+        MarkCategory(FRIENDS_CATEGORY, R.color.pink_check_box),
+        MarkCategory(NATURE_CATEGORY, R.color.green_check_box),
+        MarkCategory(DEFAULT_CATEGORY, R.color.blue_check_box)
     )
 
     class CategoriesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

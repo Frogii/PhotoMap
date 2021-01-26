@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.photomap.R
 import com.example.photomap.model.MapMark
+import com.example.photomap.util.Constants.EMPTY_ACTION_BAR_TITLE
 import com.example.photomap.util.Constants.ITEM_FROM_RECYCLER
 import kotlinx.android.synthetic.main.fragment_photo.*
 
@@ -60,6 +61,6 @@ class PhotoFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as AppCompatActivity).supportActionBar?.title = ""
+        (activity as AppCompatActivity).supportActionBar?.title = EMPTY_ACTION_BAR_TITLE
     }
 }

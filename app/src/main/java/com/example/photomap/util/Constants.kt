@@ -8,5 +8,10 @@ object Constants {
     const val REQUEST_CODE_TAKE_PHOTO = 1
     const val ITEM_FROM_RECYCLER = "recycler item"
     const val FILE_PROVIDER_PATH = "com.example.photomap.fileprovider"
+    const val FRIENDS_CATEGORY = "Friends"
+    const val NATURE_CATEGORY = "Nature"
+    const val DEFAULT_CATEGORY = "Default"
+    const val DESCRIPTION_MAP_KEY = "description"
+    const val EMPTY_ACTION_BAR_TITLE = ""
 
 }

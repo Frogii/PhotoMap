@@ -11,4 +11,9 @@
     <string name="dialog_choose_from_gallery">Choose from Gallery</string>
     <string name="dialog_take_a_picture">Take a picture</string>
     <string name="default_photo_description">Default Description</string>
+    <string name="map_mark_changed">MapMark changed</string>
+    <string name="nothing_to_change">Nothing to change</string>
+    <string name="end_of_file">.jpg</string>
+    <string name="start_of_file">JPEG_</string>
+    <string name="location_permission_not_granted">location permission not granted</string>
 </resources>
