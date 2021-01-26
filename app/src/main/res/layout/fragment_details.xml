@@ -40,7 +40,7 @@
         android:drawableStart="@drawable/ic_map_mark"
         android:drawablePadding="20dp"
         android:gravity="center"
-        android:text="Nature"
+        android:text="@string/default_category"
         android:textColor="@color/black_text"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"

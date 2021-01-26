@@ -5,16 +5,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.photomap.model.MapMark
 import com.example.photomap.repository.MapMarkRepository
+import com.example.photomap.util.Constants.CATEGORY_MAP_KEY
 import com.example.photomap.util.Constants.DESCRIPTION_MAP_KEY
 import kotlinx.coroutines.launch
 
 
 class DetailsViewModel(private val mapMarkRepository: MapMarkRepository) : ViewModel() {
 
-    fun updateMapMarkDescription(mapMark: MapMark) {
+    fun updateMapMarkDetails(mapMark: MapMark) {
         val mapOfMapMark = mutableMapOf<String, Any>()
         mapOfMapMark.apply {
             put(DESCRIPTION_MAP_KEY, mapMark.description)
+            put(CATEGORY_MAP_KEY, mapMark.category)
         }
         viewModelScope.launch {
             val mapMarkQuery = mapMarkRepository.getMapMark(mapMark)

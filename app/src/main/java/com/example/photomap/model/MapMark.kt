@@ -8,7 +8,7 @@ data class MapMark(
     val url: String = "",
     val date: String = "9.01.2021",
     var description: String = "Best photo",
-    var categery: String = "Default",
+    var category: String = "Default",
     var imageLatitude: Double = 0.0,
     var imageLongitude: Double = 0.0
 ): Serializable

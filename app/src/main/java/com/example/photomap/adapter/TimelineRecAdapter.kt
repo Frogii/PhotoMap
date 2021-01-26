@@ -39,7 +39,7 @@ class TimelineRecAdapter(private val clickableRecyclerItem: ClickableRecyclerIte
 
             textViewDescription.text = markList[position].description
             textViewDate.text = AppDateUtils.changeLongToShortPattern(markList[position].date)
-            textViewCategory.text = markList[position].categery
+            textViewCategory.text = markList[position].category
 
             this.setOnClickListener {
                 clickableRecyclerItem.onItemClick(markList[position])

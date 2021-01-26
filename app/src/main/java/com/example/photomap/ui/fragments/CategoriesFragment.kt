@@ -4,13 +4,9 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.photomap.R
 import com.example.photomap.adapter.CategoriesRecAdapter
-import com.example.photomap.adapter.TimelineRecAdapter
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_categories.*
-import kotlinx.android.synthetic.main.fragment_time_line.*
 
 
 class CategoriesFragment : Fragment() {

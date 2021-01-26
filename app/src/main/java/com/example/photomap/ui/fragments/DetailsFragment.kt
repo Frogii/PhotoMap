@@ -12,6 +12,9 @@ import com.example.photomap.R
 import com.example.photomap.model.MapMark
 import com.example.photomap.ui.DetailsActivity
 import com.example.photomap.ui.DetailsViewModel
+import com.example.photomap.ui.dialog.ChangeCategoryClickListener
+import com.example.photomap.ui.dialog.ChangeCategoryDialog
+import com.example.photomap.util.Constants.CATEGORY_DIALOG_TAG
 import com.example.photomap.util.Constants.EMPTY_ACTION_BAR_TITLE
 import com.example.photomap.util.Constants.ITEM_FROM_RECYCLER
 import kotlinx.android.synthetic.main.fragment_details.*
@@ -55,8 +58,22 @@ class DetailsFragment : Fragment() {
             .load(mapMark.url)
             .into(imageViewDetailsPhoto)
 
+        textViewDetailsCategory.text = mapMark.category
         editTextTextDetailsDescription.setText(mapMark.description)
         textViewDetailsDate.text = mapMark.date
+        textViewDetailsCategory.setOnClickListener {
+            val changeCategoryDialog = ChangeCategoryDialog(object : ChangeCategoryClickListener {
+                override fun changeCategory(category: String) {
+                    textViewDetailsCategory.text = category
+                }
+            })
+            this.activity?.let { activity ->
+                changeCategoryDialog.show(
+                    activity.supportFragmentManager,
+                    CATEGORY_DIALOG_TAG
+                )
+            }
+        }
     }
 
     override fun onResume() {
@@ -75,11 +92,22 @@ class DetailsFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_done_details -> {
-                if (mapMark.description != editTextTextDetailsDescription.text.toString()) {
+                if (mapMark.description != editTextTextDetailsDescription.text.toString() ||
+                    mapMark.category != textViewDetailsCategory.text
+                ) {
                     mapMark.description = editTextTextDetailsDescription.text.toString()
-                    detailsViewModel.updateMapMarkDescription(mapMark)
-                    Toast.makeText(this.context, getString(R.string.map_mark_changed), Toast.LENGTH_SHORT).show()
-                } else Toast.makeText(this.context, getString(R.string.nothing_to_change), Toast.LENGTH_SHORT).show()
+                    mapMark.category = textViewDetailsCategory.text.toString()
+                    detailsViewModel.updateMapMarkDetails(mapMark)
+                    Toast.makeText(
+                        this.context,
+                        getString(R.string.map_mark_changed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else Toast.makeText(
+                    this.context,
+                    getString(R.string.nothing_to_change),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             android.R.id.home -> activity?.finish()
         }
