@@ -1,6 +1,7 @@
 package com.example.photomap.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -22,6 +23,7 @@ class CategoriesFragment : Fragment(), CategoryClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        mainViewModel = (activity as MainActivity).mainViewModel
     }
 
     override fun onCreateView(
@@ -35,7 +37,6 @@ class CategoriesFragment : Fragment(), CategoryClickListener {
         super.onViewCreated(view, savedInstanceState)
         setupRecycler()
 
-        mainViewModel = (activity as MainActivity).mainViewModel
         mainViewModel.categoryLiveDataList.observe(viewLifecycleOwner, {
             categoryList = it
         })
@@ -43,7 +44,6 @@ class CategoriesFragment : Fragment(), CategoryClickListener {
             checkBoxStateMap = it
             categoriesRecAdapter.setCheckBoxStateMap(checkBoxStateMap)
         })
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -69,14 +69,14 @@ class CategoriesFragment : Fragment(), CategoryClickListener {
         if (categoryList.contains(category)) {
             categoryList.remove(category)
             checkBoxStateMap[category] = false
-            mainViewModel.checkBoxLiveDataStateMap.postValue(checkBoxStateMap)
-            mainViewModel.categoryLiveDataList.postValue(categoryList)
+            mainViewModel.checkBoxLiveDataStateMap.value = checkBoxStateMap
+            mainViewModel.categoryLiveDataList.value = categoryList
         } else {
             //add category to liveData
             categoryList.add(category)
             checkBoxStateMap[category] = true
-            mainViewModel.checkBoxLiveDataStateMap.postValue(checkBoxStateMap)
-            mainViewModel.categoryLiveDataList.postValue(categoryList)
+            mainViewModel.checkBoxLiveDataStateMap.value = checkBoxStateMap
+            mainViewModel.categoryLiveDataList.value = categoryList
         }
     }
 }
