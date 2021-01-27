@@ -26,6 +26,7 @@
     <style name="CategoriesCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:button">@drawable/check_box_selector</item>
         <item name="android:paddingLeft">@dimen/category_padding_left</item>
+        <item name="android:checked">true</item>
         <item name="android:layout_marginStart">@dimen/category_margin_start</item>
         <item name="android:layout_marginTop">@dimen/category_margin_top</item>
         <item name="android:layout_marginBottom">@dimen/category_margin_bottom</item>

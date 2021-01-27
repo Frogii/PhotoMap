@@ -34,8 +34,8 @@ class MapMarkRepository private constructor() {
         FirebaseInstance.fireStoreDB.add(mapMark)
     }
 
-    suspend fun getAllMapMarks(): QuerySnapshot {
-        return FirebaseInstance.fireStoreDB.get().await()
+    suspend fun getAllMapMarks(category: String, filter: List<String>): QuerySnapshot {
+        return FirebaseInstance.fireStoreDB.whereIn(category, filter).get().await()
     }
 
     suspend fun getMapMark(mapMark: MapMark): QuerySnapshot {
