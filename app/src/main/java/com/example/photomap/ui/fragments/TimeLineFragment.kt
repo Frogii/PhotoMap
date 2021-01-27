@@ -3,6 +3,7 @@ package com.example.photomap.ui.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,6 +59,17 @@ class TimeLineFragment : Fragment(), ClickableRecyclerItem {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_timeline_fragment, menu)
+        val searchMenuItem = menu.findItem(R.id.action_search)
+        val actionSearchView = searchMenuItem.actionView as SearchView
+        actionSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                return false
+            }
+        })
         super.onCreateOptionsMenu(menu, inflater)
     }
 
