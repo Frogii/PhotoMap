@@ -62,11 +62,17 @@ class TimeLineFragment : Fragment(), ClickableRecyclerItem {
         val searchMenuItem = menu.findItem(R.id.action_search)
         val actionSearchView = searchMenuItem.actionView as SearchView
         actionSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(p0: String?): Boolean {
+            override fun onQueryTextSubmit(queryString: String?): Boolean {
+                queryString?.let {
+                    mainViewModel.searchMapMarks(queryString)
+                }
                 return false
             }
 
-            override fun onQueryTextChange(p0: String?): Boolean {
+            override fun onQueryTextChange(queryString: String?): Boolean {
+                queryString?.let {
+                    mainViewModel.searchMapMarks(queryString)
+                }
                 return false
             }
         })

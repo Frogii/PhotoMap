@@ -3,6 +3,8 @@ package com.example.photomap.repository
 import android.net.Uri
 import com.example.photomap.firebase.FirebaseInstance
 import com.example.photomap.model.MapMark
+import com.example.photomap.util.Constants.MAP_MARK_FIELD_NAME
+import com.example.photomap.util.Constants.ORDER_BY_DESCRIPTION
 import com.example.photomap.util.Constants.STORAGE_PATH
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.SetOptions
@@ -39,7 +41,7 @@ class MapMarkRepository private constructor() {
     }
 
     suspend fun getMapMark(mapMark: MapMark): QuerySnapshot {
-        return FirebaseInstance.fireStoreDB.whereEqualTo("name", mapMark.name).get().await()
+        return FirebaseInstance.fireStoreDB.whereEqualTo(MAP_MARK_FIELD_NAME, mapMark.name).get().await()
     }
 
     suspend fun updateMapMark(mapMarkQuery: QuerySnapshot, newMapMarkMap: Map<String, Any>) {
@@ -48,5 +50,14 @@ class MapMarkRepository private constructor() {
                 newMapMarkMap,
                 SetOptions.merge()
             ).await()
+    }
+
+    suspend fun searchMapMarks(
+        category: String,
+        filter: List<String>,
+        query: String
+    ): QuerySnapshot {
+        return FirebaseInstance.fireStoreDB.whereIn(category, filter).orderBy(ORDER_BY_DESCRIPTION)
+            .startAt(query).endAt(query + "\uF8FF").get().await()
     }
 }

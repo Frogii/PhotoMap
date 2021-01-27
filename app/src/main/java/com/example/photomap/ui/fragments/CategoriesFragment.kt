@@ -54,7 +54,6 @@ class CategoriesFragment : Fragment(), CategoryClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> findNavController().navigateUp()
-            R.id.action_done_categories -> findNavController().navigateUp()
         }
         return super.onOptionsItemSelected(item)
     }

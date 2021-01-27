@@ -16,5 +16,8 @@ object Constants {
     const val CATEGORY_MAP_KEY = "category"
     const val EMPTY_ACTION_BAR_TITLE = ""
     const val CATEGORY_DIALOG_TAG = "CategoryDialog"
+    const val ORDER_BY_DESCRIPTION = "description"
+    const val MAP_MARK_FIELD_NAME = "name"
+    const val MAP_MARK_FIELD_CATEGORY = "category"
 
 }

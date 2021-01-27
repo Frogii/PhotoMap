@@ -10,6 +10,7 @@ import com.example.photomap.repository.MapMarkRepository
 import com.example.photomap.util.AppDateUtils
 import com.example.photomap.util.Constants.DEFAULT_CATEGORY
 import com.example.photomap.util.Constants.FRIENDS_CATEGORY
+import com.example.photomap.util.Constants.MAP_MARK_FIELD_CATEGORY
 import com.example.photomap.util.Constants.NATURE_CATEGORY
 import com.example.photomap.util.Constants.NULL_CATEGORY
 import com.google.firebase.firestore.ktx.toObject
@@ -20,7 +21,8 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
 
     private val mapMarkList = mutableListOf<MapMark>()
     val dataList: MutableLiveData<List<MapMark>> = MutableLiveData()
-    private val categoryList = mutableListOf(FRIENDS_CATEGORY, NATURE_CATEGORY, DEFAULT_CATEGORY, NULL_CATEGORY)
+    private val categoryList =
+        mutableListOf(FRIENDS_CATEGORY, NATURE_CATEGORY, DEFAULT_CATEGORY, NULL_CATEGORY)
     val categoryLiveDataList: MutableLiveData<MutableList<String>> = MutableLiveData()
     private val checkBoxStateMap = mutableMapOf(
         Pair(FRIENDS_CATEGORY, true),
@@ -61,7 +63,7 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
         viewModelScope.launch {
             mapMarkList.clear()
             val querySnapshot =
-                categoryLiveDataList.value?.let { mapMarkRepository.getAllMapMarks("category", it) }
+                categoryLiveDataList.value?.let { mapMarkRepository.getAllMapMarks(MAP_MARK_FIELD_CATEGORY, it) }
             if (querySnapshot != null) {
                 for (document in querySnapshot.documents) {
                     document.toObject<MapMark>()?.let {
@@ -71,6 +73,29 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
             }
             this@MainViewModel.dataList.postValue(mapMarkList)
             Log.d("ViewModelLog", "download")
+        }
+    }
+
+    fun searchMapMarks(query: String) {
+        viewModelScope.launch {
+            mapMarkList.clear()
+            val querySnapshot =
+                categoryLiveDataList.value?.let {
+                    mapMarkRepository.searchMapMarks(
+                        MAP_MARK_FIELD_CATEGORY,
+                        it,
+                        query
+                    )
+                }
+            if (querySnapshot != null) {
+                for (document in querySnapshot.documents) {
+                    document.toObject<MapMark>()?.let {
+                        mapMarkList.add(it)
+                    }
+                }
+            }
+            this@MainViewModel.dataList.postValue(mapMarkList)
+            Log.d("ViewModelLog", "search")
         }
     }
 }
