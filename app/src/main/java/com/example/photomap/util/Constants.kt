@@ -11,6 +11,7 @@ object Constants {
     const val FRIENDS_CATEGORY = "Friends"
     const val NATURE_CATEGORY = "Nature"
     const val DEFAULT_CATEGORY = "Default"
+    const val NULL_CATEGORY = "null category"
     const val DESCRIPTION_MAP_KEY = "description"
     const val CATEGORY_MAP_KEY = "category"
     const val EMPTY_ACTION_BAR_TITLE = ""

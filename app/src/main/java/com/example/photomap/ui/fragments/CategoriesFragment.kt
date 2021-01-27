@@ -1,7 +1,6 @@
 package com.example.photomap.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -66,7 +65,6 @@ class CategoriesFragment : Fragment(), CategoryClickListener {
     }
 
     override fun onCategoryClick(category: String) {
-        Log.d("CATEGORY", "click $category")
         //remove category from liveData
         if (categoryList.contains(category)) {
             categoryList.remove(category)
@@ -80,7 +78,5 @@ class CategoriesFragment : Fragment(), CategoryClickListener {
             mainViewModel.checkBoxLiveDataStateMap.postValue(checkBoxStateMap)
             mainViewModel.categoryLiveDataList.postValue(categoryList)
         }
-        Log.d("CATEGORY",  "local list $categoryList.toString()")
-        Log.d("CATEGORY", "LiveDATA ${mainViewModel.categoryLiveDataList.value.toString()}")
     }
 }

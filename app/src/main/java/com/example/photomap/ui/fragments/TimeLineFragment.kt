@@ -45,6 +45,7 @@ class TimeLineFragment : Fragment(), ClickableRecyclerItem {
             timelineAdapter.setList(it)
             }
         )
+        mainViewModel.getAllMapMarks()
     }
 
     private fun setupRecycler() {
