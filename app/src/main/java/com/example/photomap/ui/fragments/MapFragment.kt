@@ -16,11 +16,13 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.photomap.R
+import com.example.photomap.model.MapMark
 import com.example.photomap.ui.MainActivity
 import com.example.photomap.ui.MainViewModel
 import com.example.photomap.ui.dialog.ChoosePhotoDialog
 import com.example.photomap.ui.dialog.DialogClickListener
 import com.example.photomap.util.AppCameraUtils
+import com.example.photomap.util.AppMapUtils
 import com.example.photomap.util.Constants.FILE_PROVIDER_PATH
 import com.example.photomap.util.Constants.REQUEST_CODE_IMAGE_PICK
 import com.example.photomap.util.Constants.REQUEST_CODE_TAKE_PHOTO
@@ -40,6 +42,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mainViewModel: MainViewModel
     private var photoFile: File? = null
     private lateinit var photoUri: Uri
+    private var listOfMapMarks: List<MapMark> = listOf()
+    private var photoLatLng = LatLng(0.0, 0.0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,10 +60,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapViewBundle = savedInstanceState?.getBundle(MAP_VIEW_BUNDLE_KEY)
+        mainViewModel = (activity as MainActivity).mainViewModel
+        mainViewModel.getAllMapMarks()
+
+        Log.d("mapLog", "onViewCreated list $listOfMapMarks")
         mapView.onCreate(mapViewBundle)
         mapView.getMapAsync(this)
 
-        mainViewModel = (activity as MainActivity).mainViewModel
+
 
         floatingButtonPhoto.setOnClickListener {
             ChoosePhotoDialog(activity as MainActivity, object : DialogClickListener {
@@ -105,15 +113,27 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         //taking photo from camera
         if (requestCode == REQUEST_CODE_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             photoUri = Uri.fromFile(photoFile)
-            photoFile?.name?.let { mainViewModel.uploadMapMark(photoUri, it.substring(0,22)) }
+            photoFile?.name?.let {
+                mainViewModel.uploadMapMark(
+                    photoUri, it.substring(0, 22),
+                    photoLatLng.latitude,
+                    photoLatLng.longitude
+                )
+            }
         } else if (requestCode == REQUEST_CODE_IMAGE_PICK) {
             //taking photo from gallery
             data?.data?.let {
                 Log.d("myLog", "taking photo from gallery")
                 val file = it
-                val fileName = this.activity?.let { activity -> AppCameraUtils.createPhotoName(activity) }
+                val fileName =
+                    this.activity?.let { activity -> AppCameraUtils.createPhotoName(activity) }
                 if (fileName != null) {
-                    mainViewModel.uploadMapMark(file, fileName)
+                    mainViewModel.uploadMapMark(
+                        file,
+                        fileName,
+                        photoLatLng.latitude,
+                        photoLatLng.longitude
+                    )
                 }
             }
         }
@@ -170,11 +190,61 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(p0: GoogleMap) {
         map = p0
+        mainViewModel.dataList.observe(viewLifecycleOwner, {
+            listOfMapMarks = it
+            for (i in listOfMapMarks) {
+                map.addMarker(AppMapUtils.setMarkerOptions(i, this.requireContext()))
+            }
+        })
         val minsk = LatLng(53.893009, 27.567444)
         val zoomLevel = 11f
         map.addMarker(MarkerOptions().position(minsk).title("Minsk"))
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(minsk, zoomLevel))
+        Log.d("mapLog", "onMapReady list $listOfMapMarks.toString()")
+
+        map.setOnMapLongClickListener { latLng ->
+            photoLatLng = latLng
+            ChoosePhotoDialog(activity as MainActivity, object : DialogClickListener {
+                override fun chooseImage() {
+                    Intent(
+                        Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                    )
+                        .also {
+                            startActivityForResult(it, REQUEST_CODE_IMAGE_PICK)
+                        }
+                    Log.d("mapLog", latLng.toString())
+                }
+
+                override fun takePhoto() {
+                    photoFile = this@MapFragment.activity?.let { activity ->
+                        AppCameraUtils.getPhotoFile(
+                            AppCameraUtils.createPhotoName(activity),
+                            activity
+                        )
+                    }
+                    val fileProvider = photoFile?.let { file ->
+                        this@MapFragment.activity?.let { activity ->
+                            FileProvider.getUriForFile(
+                                activity,
+                                FILE_PROVIDER_PATH,
+                                file
+                            )
+                        }
+                    }
+                    Intent(
+                        Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    ).also {
+                        it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
+                        startActivityForResult(it, REQUEST_CODE_TAKE_PHOTO)
+                    }
+                }
+            }).show()
+            mainViewModel.getAllMapMarks()
+        }
+
         getMyLocation()
+
 
     }
 
@@ -203,7 +273,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (grantResults.contains(PackageManager.PERMISSION_GRANTED)) {
                 getMyLocation()
             } else {
-                Toast.makeText(this.activity, getString(R.string.location_permission_not_granted), Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this.activity,
+                    getString(R.string.location_permission_not_granted),
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
         }

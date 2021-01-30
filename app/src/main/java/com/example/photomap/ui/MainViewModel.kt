@@ -37,7 +37,7 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
         getAllMapMarks()
     }
 
-    fun uploadMapMark(imageFile: Uri, imageName: String) {
+    fun uploadMapMark(imageFile: Uri, imageName: String, imgLat: Double, imgLng: Double) {
         viewModelScope.launch {
             try {
                 imageName.let {
@@ -46,7 +46,7 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
                     val mark = MapMark(
                         name = imageName, url = imageUrl, date = AppDateUtils.formatDate(
                             Date(), AppDateUtils.longPhotoDatePattern
-                        )
+                        ), imageLatitude = imgLat, imageLongitude = imgLng
                     )
                     mapMarkRepository.uploadMapMark(mark)
                     mapMarkList.add(mark)
@@ -63,7 +63,12 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
         viewModelScope.launch {
             mapMarkList.clear()
             val querySnapshot =
-                categoryLiveDataList.value?.let { mapMarkRepository.getAllMapMarks(MAP_MARK_FIELD_CATEGORY, it) }
+                categoryLiveDataList.value?.let {
+                    mapMarkRepository.getAllMapMarks(
+                        MAP_MARK_FIELD_CATEGORY,
+                        it
+                    )
+                }
             if (querySnapshot != null) {
                 for (document in querySnapshot.documents) {
                     document.toObject<MapMark>()?.let {
