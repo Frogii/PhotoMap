@@ -57,11 +57,10 @@ class AppMapUtils {
             val ivPhoto = view.findViewById<ImageView>(R.id.imageViewInfoWindow)
             tvDescription.text = mapMark?.description
             tvDate.text = mapMark?.date?.let { AppDateUtils.changeLongToShortPattern(it) }
-            Glide
-                .with(view.context)
-                .load(mapMark?.url)
-                .into(ivPhoto)
-
+                Glide
+                    .with(view.context)
+                    .load(mapMark?.url)
+                    .into(ivPhoto)
         }
 
         override fun getInfoWindow(marker: Marker): View? {
