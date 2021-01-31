@@ -34,6 +34,10 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_map.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 
 
@@ -254,10 +258,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 it.putExtra(MAP_MARK_ITEM, mapOfMapMarks[marker.title])
             })
         }
-
+        map.setOnMarkerClickListener {
+            it.showInfoWindow()
+            if (it.isInfoWindowShown) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(500)
+                    it.showInfoWindow()
+                }
+            }
+            true
+        }
         getMyLocation()
-
-
     }
 
     private fun getMyLocation() {
