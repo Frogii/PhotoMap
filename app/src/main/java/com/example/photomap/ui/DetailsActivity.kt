@@ -9,7 +9,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.example.photomap.R
 import com.example.photomap.repository.MapMarkRepository
-import com.example.photomap.util.Constants.ITEM_FROM_RECYCLER
+import com.example.photomap.util.Constants.MAP_MARK_ITEM
 
 class DetailsActivity : AppCompatActivity() {
 
@@ -27,12 +27,12 @@ class DetailsActivity : AppCompatActivity() {
             this, detailsViewModelProviderFactory
         ).get(DetailsViewModel::class.java)
 
-        val mapMark = intent.getSerializableExtra(ITEM_FROM_RECYCLER)
+        val mapMark = intent.getSerializableExtra(MAP_MARK_ITEM)
         navController = Navigation.findNavController(this, R.id.detailsNavHostFragment)
         //WOW it works... sending data to fragment from activity by using navigation
         navController.setGraph(
             R.navigation.details_nav_graph,
-            Bundle().also { it.putSerializable(ITEM_FROM_RECYCLER, mapMark) })
+            Bundle().also { it.putSerializable(MAP_MARK_ITEM, mapMark) })
         NavigationUI.setupActionBarWithNavController(this, navController)
         Log.d("myLog", mapMark.toString())
     }

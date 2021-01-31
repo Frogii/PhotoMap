@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.photomap.R
 import com.example.photomap.model.MapMark
+import com.example.photomap.ui.DetailsActivity
 import com.example.photomap.ui.MainActivity
 import com.example.photomap.ui.MainViewModel
 import com.example.photomap.ui.dialog.ChoosePhotoDialog
@@ -24,6 +25,7 @@ import com.example.photomap.ui.dialog.DialogClickListener
 import com.example.photomap.util.AppCameraUtils
 import com.example.photomap.util.AppMapUtils
 import com.example.photomap.util.Constants.FILE_PROVIDER_PATH
+import com.example.photomap.util.Constants.MAP_MARK_ITEM
 import com.example.photomap.util.Constants.REQUEST_CODE_IMAGE_PICK
 import com.example.photomap.util.Constants.REQUEST_CODE_TAKE_PHOTO
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -43,6 +45,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var photoFile: File? = null
     private lateinit var photoUri: Uri
     private var listOfMapMarks: List<MapMark> = listOf()
+    private var mapOfMapMarks: MutableMap<String, MapMark> = mutableMapOf()
     private var photoLatLng = LatLng(0.0, 0.0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,8 +69,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         Log.d("mapLog", "onViewCreated list $listOfMapMarks")
         mapView.onCreate(mapViewBundle)
         mapView.getMapAsync(this)
-
-
 
         floatingButtonPhoto.setOnClickListener {
             ChoosePhotoDialog(activity as MainActivity, object : DialogClickListener {
@@ -190,18 +191,23 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(p0: GoogleMap) {
         map = p0
-        mainViewModel.dataList.observe(viewLifecycleOwner, {
+        mainViewModel.dataList.observe(viewLifecycleOwner, { it ->
             listOfMapMarks = it
-            for (i in listOfMapMarks) {
-                map.addMarker(AppMapUtils.setMarkerOptions(i, this.requireContext()))
+            for (mapMark in listOfMapMarks) {
+                map.addMarker(AppMapUtils.setMarkerOptions(mapMark, this.requireContext()))
+                mapOfMapMarks[mapMark.name] = mapMark
             }
         })
         val minsk = LatLng(53.893009, 27.567444)
         val zoomLevel = 11f
         map.addMarker(MarkerOptions().position(minsk).title("Minsk"))
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(minsk, zoomLevel))
-        Log.d("mapLog", "onMapReady list $listOfMapMarks.toString()")
-
+        map.setInfoWindowAdapter(this.activity?.let {
+            AppMapUtils.CustomMapInfoWindowAdapter(
+                it,
+                mapOfMapMarks
+            )
+        })
         map.setOnMapLongClickListener { latLng ->
             photoLatLng = latLng
             ChoosePhotoDialog(activity as MainActivity, object : DialogClickListener {
@@ -241,6 +247,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
             }).show()
             mainViewModel.getAllMapMarks()
+        }
+
+        map.setOnInfoWindowClickListener { marker ->
+            startActivity(Intent(this.context, DetailsActivity::class.java).also {
+                it.putExtra(MAP_MARK_ITEM, mapOfMapMarks[marker.title])
+            })
         }
 
         getMyLocation()

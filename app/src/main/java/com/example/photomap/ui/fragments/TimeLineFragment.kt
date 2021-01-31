@@ -14,7 +14,7 @@ import com.example.photomap.model.MapMark
 import com.example.photomap.ui.DetailsActivity
 import com.example.photomap.ui.MainActivity
 import com.example.photomap.ui.MainViewModel
-import com.example.photomap.util.Constants.ITEM_FROM_RECYCLER
+import com.example.photomap.util.Constants.MAP_MARK_ITEM
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.fragment_time_line.*
 import java.util.*
@@ -91,7 +91,7 @@ class TimeLineFragment : Fragment(), ClickableRecyclerItem {
 
     override fun onItemClick(item: MapMark) {
         startActivity(Intent(this.context, DetailsActivity::class.java).also {
-            it.putExtra(ITEM_FROM_RECYCLER, item)
+            it.putExtra(MAP_MARK_ITEM, item)
         })
     }
 }

@@ -6,7 +6,7 @@ object Constants {
     const val STORAGE_PATH = "mapPhotos/"
     const val REQUEST_CODE_IMAGE_PICK = 0
     const val REQUEST_CODE_TAKE_PHOTO = 1
-    const val ITEM_FROM_RECYCLER = "recycler item"
+    const val MAP_MARK_ITEM = "mapMark item"
     const val FILE_PROVIDER_PATH = "com.example.photomap.fileprovider"
     const val FRIENDS_CATEGORY = "Friends"
     const val NATURE_CATEGORY = "Nature"

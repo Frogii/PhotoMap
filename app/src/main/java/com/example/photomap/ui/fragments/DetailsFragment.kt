@@ -16,7 +16,7 @@ import com.example.photomap.ui.dialog.ChangeCategoryClickListener
 import com.example.photomap.ui.dialog.ChangeCategoryDialog
 import com.example.photomap.util.Constants.CATEGORY_DIALOG_TAG
 import com.example.photomap.util.Constants.EMPTY_ACTION_BAR_TITLE
-import com.example.photomap.util.Constants.ITEM_FROM_RECYCLER
+import com.example.photomap.util.Constants.MAP_MARK_ITEM
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
@@ -42,14 +42,14 @@ class DetailsFragment : Fragment() {
 
         detailsViewModel = (activity as DetailsActivity).detailsViewModel
 
-        mapMark = this.arguments?.getSerializable(ITEM_FROM_RECYCLER) as MapMark
+        mapMark = this.arguments?.getSerializable(MAP_MARK_ITEM) as MapMark
         Log.d("myLog", mapMark.toString())
 
         imageViewDetailsPhoto.setOnClickListener {
             findNavController().navigate(
                 R.id.action_detailsFragment_to_photoFragment,
                 Bundle().also {
-                    it.putSerializable(ITEM_FROM_RECYCLER, mapMark)
+                    it.putSerializable(MAP_MARK_ITEM, mapMark)
                 })
         }
 

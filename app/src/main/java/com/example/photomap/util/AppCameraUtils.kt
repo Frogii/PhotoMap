@@ -11,7 +11,11 @@ class AppCameraUtils {
 
         fun getPhotoFile(fileName: String, context: Context): File {
             val storageDirectory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-            return File.createTempFile(fileName, context.getString(R.string.end_of_file), storageDirectory)
+            return File.createTempFile(
+                fileName,
+                context.getString(R.string.end_of_file),
+                storageDirectory
+            )
         }
 
         fun createPhotoName(context: Context): String {

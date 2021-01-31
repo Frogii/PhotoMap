@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.example.photomap.R
 import com.example.photomap.model.MapMark
 import com.example.photomap.util.Constants.EMPTY_ACTION_BAR_TITLE
-import com.example.photomap.util.Constants.ITEM_FROM_RECYCLER
+import com.example.photomap.util.Constants.MAP_MARK_ITEM
 import kotlinx.android.synthetic.main.fragment_photo.*
 
 
@@ -33,7 +33,7 @@ class PhotoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hideTextView()
-        val mapMark = this.arguments?.getSerializable(ITEM_FROM_RECYCLER) as MapMark
+        val mapMark = this.arguments?.getSerializable(MAP_MARK_ITEM) as MapMark
         textViewFullPhotoDescription.text = mapMark.description
         textViewFullPhotoDate.text = mapMark.date
         Glide

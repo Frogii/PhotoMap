@@ -19,4 +19,5 @@
     <string name="default_category">Default</string>
     <string name="dialog_change_category_title">Change category</string>
     <string name="dialog_change_category_cancel">Cancel</string>
+    <string name="default_photo_date">21.21.2121</string>
 </resources>

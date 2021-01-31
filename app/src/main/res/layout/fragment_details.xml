@@ -25,7 +25,7 @@
         android:drawableStart="@drawable/ic_date"
         android:drawablePadding="20dp"
         android:gravity="center"
-        android:text="24.01.2001"
+        android:text="@string/default_photo_date"
         android:textColor="@color/black_text"
         android:textSize="@dimen/main_text_size"
         app:layout_constraintStart_toStartOf="parent"
