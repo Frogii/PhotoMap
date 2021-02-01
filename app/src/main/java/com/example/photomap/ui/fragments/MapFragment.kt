@@ -1,9 +1,13 @@
 package com.example.photomap.ui.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -28,11 +32,14 @@ import com.example.photomap.util.Constants.FILE_PROVIDER_PATH
 import com.example.photomap.util.Constants.MAP_MARK_ITEM
 import com.example.photomap.util.Constants.REQUEST_CODE_IMAGE_PICK
 import com.example.photomap.util.Constants.REQUEST_CODE_TAKE_PHOTO
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.database.collection.LLRBNode
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,13 +55,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mainViewModel: MainViewModel
     private var photoFile: File? = null
     private lateinit var photoUri: Uri
+    private var longClickPhotoLatLng = LatLng(0.0, 0.0)
     private var listOfMapMarks: List<MapMark> = listOf()
     private var mapOfMapMarks: MutableMap<String, MapMark> = mutableMapOf()
-    private var photoLatLng = LatLng(0.0, 0.0)
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var myLocation: Location
+    private var followButtonState = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        activity?.let {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(it)
+        }
     }
 
     override fun onCreateView(
@@ -70,7 +83,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mainViewModel = (activity as MainActivity).mainViewModel
         mainViewModel.getAllMapMarks()
 
-        Log.d("mapLog", "onViewCreated list $listOfMapMarks")
         mapView.onCreate(mapViewBundle)
         mapView.getMapAsync(this)
 
@@ -87,14 +99,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
 
                 override fun takePhoto() {
-                    photoFile = this@MapFragment.activity?.let { activity ->
+                    photoFile = activity?.let { activity ->
                         AppCameraUtils.getPhotoFile(
                             AppCameraUtils.createPhotoName(activity),
                             activity
                         )
                     }
                     val fileProvider = photoFile?.let { file ->
-                        this@MapFragment.activity?.let { activity ->
+                        activity?.let { activity ->
                             FileProvider.getUriForFile(
                                 activity,
                                 FILE_PROVIDER_PATH,
@@ -102,9 +114,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             )
                         }
                     }
-                    Intent(
-                        Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    ).also {
+                    Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {
                         it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
                         startActivityForResult(it, REQUEST_CODE_TAKE_PHOTO)
                     }
@@ -121,8 +131,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             photoFile?.name?.let {
                 mainViewModel.uploadMapMark(
                     photoUri, it.substring(0, 22),
-                    photoLatLng.latitude,
-                    photoLatLng.longitude
+                    myLocation.latitude,
+                    myLocation.longitude
                 )
             }
         } else if (requestCode == REQUEST_CODE_IMAGE_PICK) {
@@ -136,8 +146,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     mainViewModel.uploadMapMark(
                         file,
                         fileName,
-                        photoLatLng.latitude,
-                        photoLatLng.longitude
+                        myLocation.latitude,
+                        myLocation.longitude
                     )
                 }
             }
@@ -193,8 +203,54 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         private const val LOCATION_PERMISSION_REQUEST = 1
     }
 
+
     override fun onMapReady(p0: GoogleMap) {
+        val zoomLevel = 12f
         map = p0
+        getMyLocation()
+        if (activity?.let {
+                ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION)
+            } == PackageManager.PERMISSION_GRANTED
+        ) {
+            map.isMyLocationEnabled = true
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location ->
+                    myLocation = location
+                    val myLatLong = LatLng(location.latitude, location.longitude)
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLong, zoomLevel))
+                }
+        }
+//        val myLatLng = LatLng(myLocation.latitude, myLocation.longitude)
+        mainViewModel.followButtonLiveDataState.observe(viewLifecycleOwner, {
+            followButtonState = it
+            if (followButtonState) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    while (followButtonState) {
+                        fusedLocationClient.lastLocation
+                            .addOnSuccessListener { location: Location ->
+                                myLocation = location
+                                map.animateCamera(
+                                    CameraUpdateFactory.newLatLngZoom(
+                                        LatLng(
+                                            location.latitude,
+                                            location.longitude
+                                        ), zoomLevel
+                                    )
+                                )
+                            }
+                        delay(5000)
+                    }
+                }
+                AppMapUtils.changeMapUiState(map, followButtonState)
+                floatingButtonFollow.backgroundTintList =
+                    ColorStateList.valueOf(resources.getColor(R.color.floating_button_enable))
+            } else {
+                AppMapUtils.changeMapUiState(map, followButtonState)
+                floatingButtonFollow.backgroundTintList =
+                    ColorStateList.valueOf(resources.getColor(R.color.floating_button_disable))
+            }
+        })
+        map.uiSettings.isMyLocationButtonEnabled = false
         mainViewModel.dataList.observe(viewLifecycleOwner, { it ->
             listOfMapMarks = it
             for (mapMark in listOfMapMarks) {
@@ -203,17 +259,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
         })
         val minsk = LatLng(53.893009, 27.567444)
-        val zoomLevel = 11f
         map.addMarker(MarkerOptions().position(minsk).title("Minsk"))
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(minsk, zoomLevel))
+//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(minsk, zoomLevel))
         map.setInfoWindowAdapter(this.activity?.let {
             AppMapUtils.CustomMapInfoWindowAdapter(
                 it,
                 mapOfMapMarks
             )
         })
-        map.setOnMapLongClickListener { latLng ->
-            photoLatLng = latLng
+        map.setOnMapLongClickListener {
+            longClickPhotoLatLng = LatLng(it.latitude, it.longitude)
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(longClickPhotoLatLng, zoomLevel))
             ChoosePhotoDialog(activity as MainActivity, object : DialogClickListener {
                 override fun chooseImage() {
                     Intent(
@@ -223,7 +279,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         .also {
                             startActivityForResult(it, REQUEST_CODE_IMAGE_PICK)
                         }
-                    Log.d("mapLog", latLng.toString())
                 }
 
                 override fun takePhoto() {
@@ -258,6 +313,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 it.putExtra(MAP_MARK_ITEM, mapOfMapMarks[marker.title])
             })
         }
+
         map.setOnMarkerClickListener {
             it.showInfoWindow()
             if (it.isInfoWindowShown) {
@@ -268,17 +324,34 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
             true
         }
-        getMyLocation()
+
+        floatingButtonFollow.setOnClickListener {
+            mainViewModel.followButtonLiveDataState.value = !followButtonState
+            if (followButtonState) {
+                getMyLocation()
+                Log.d("mapLog", "getloc")
+                map.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(myLocation.latitude, myLocation.longitude), zoomLevel
+                    )
+                )
+            }
+        }
     }
 
     private fun getMyLocation() {
-        if (this.context?.let {
+        if (activity?.let {
                 ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION)
             } == PackageManager.PERMISSION_GRANTED
         ) {
             map.isMyLocationEnabled = true
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location ->
+                    myLocation = location
+                }
+
         } else {
-            this.activity?.let {
+            activity?.let {
                 ActivityCompat.requestPermissions(
                     it, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                     LOCATION_PERMISSION_REQUEST
@@ -297,7 +370,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 getMyLocation()
             } else {
                 Toast.makeText(
-                    this.activity,
+                    activity,
                     getString(R.string.location_permission_not_granted),
                     Toast.LENGTH_SHORT
                 )

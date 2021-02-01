@@ -41,6 +41,21 @@ class AppMapUtils {
                     )
                 ).title(mapMark.name)
         }
+
+        fun changeMapUiState(map: GoogleMap, state: Boolean) {
+            if (state) {
+                map.uiSettings.isTiltGesturesEnabled = false
+                map.uiSettings.isScrollGesturesEnabled = false
+                map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = false
+                map.uiSettings.isZoomGesturesEnabled = false
+
+            } else {
+                map.uiSettings.isTiltGesturesEnabled = true
+                map.uiSettings.isScrollGesturesEnabled = true
+                map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
+                map.uiSettings.isZoomGesturesEnabled = true
+            }
+        }
     }
 
     class CustomMapInfoWindowAdapter(context: Context, var mapOfMapMark: Map<String, MapMark>) :
@@ -57,10 +72,10 @@ class AppMapUtils {
             val ivPhoto = view.findViewById<ImageView>(R.id.imageViewInfoWindow)
             tvDescription.text = mapMark?.description
             tvDate.text = mapMark?.date?.let { AppDateUtils.changeLongToShortPattern(it) }
-                Glide
-                    .with(view.context)
-                    .load(mapMark?.url)
-                    .into(ivPhoto)
+            Glide
+                .with(view.context)
+                .load(mapMark?.url)
+                .into(ivPhoto)
         }
 
         override fun getInfoWindow(marker: Marker): View? {

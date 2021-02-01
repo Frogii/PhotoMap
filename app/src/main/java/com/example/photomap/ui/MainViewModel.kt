@@ -30,8 +30,10 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
         Pair(DEFAULT_CATEGORY, true)
     )
     val checkBoxLiveDataStateMap: MutableLiveData<MutableMap<String, Boolean>> = MutableLiveData()
+    val followButtonLiveDataState: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
+        followButtonLiveDataState.value = true
         categoryLiveDataList.value = categoryList
         checkBoxLiveDataStateMap.postValue(checkBoxStateMap)
         getAllMapMarks()
