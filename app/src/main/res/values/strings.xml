@@ -3,7 +3,7 @@
     <string name="firebase_auth_id">76236369100-ian32pi9bna29889dvjmv7viea9r0mtu.apps.googleusercontent.com</string>
     <string name="google_maps_key">AIzaSyA7QTGWatFrWewxJ2VOVJqFFqOdSQL7hOI</string>
     <string name="log_in_button">Log in with google</string>
-    <string name="welcome_text">Welcome to Photo Map</string>
+    <string name="welcome_text">Welcome</string>
     <string name="search_menu_item">Search</string>
     <string name="categories_menu_item">Categories</string>
     <string name="default_checkbox">Default</string>
@@ -20,4 +20,5 @@
     <string name="dialog_change_category_title">Change category</string>
     <string name="dialog_change_category_cancel">Cancel</string>
     <string name="default_photo_date">21.21.2121</string>
+    <string name="action_log_out">Log out</string>
 </resources>

@@ -4,8 +4,11 @@ object Constants {
 
     const val MAP_MARK_COLLECTION = "mapMarks"
     const val STORAGE_PATH = "mapPhotos/"
-    const val REQUEST_CODE_IMAGE_PICK = 0
-    const val REQUEST_CODE_TAKE_PHOTO = 1
+    const val REQUEST_CODE_SIGN_IN = 100
+    const val MY_LOCATION_REQUEST_CODE_IMAGE_PICK = 0
+    const val LONG_CLICK_REQUEST_CODE_IMAGE_PICK = 2
+    const val MY_LOCATION_REQUEST_CODE_TAKE_PHOTO = 1
+    const val LONG_CLICK_REQUEST_CODE_TAKE_PHOTO = 3
     const val MAP_MARK_ITEM = "mapMark item"
     const val FILE_PROVIDER_PATH = "com.example.photomap.fileprovider"
     const val FRIENDS_CATEGORY = "Friends"

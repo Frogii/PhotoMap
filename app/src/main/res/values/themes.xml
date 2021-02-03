@@ -14,6 +14,11 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="LoginTheme" parent="Theme.PhotoMap">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="TransparentTheme" parent="Theme.PhotoMap">
         <item name="actionBarStyle">@style/MyTheme.ActionBar</item>
         <item name="android:windowTranslucentStatus">true</item>

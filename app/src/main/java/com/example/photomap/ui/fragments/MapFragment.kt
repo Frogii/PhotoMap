@@ -1,12 +1,10 @@
 package com.example.photomap.ui.fragments
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -22,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.photomap.R
 import com.example.photomap.model.MapMark
 import com.example.photomap.ui.DetailsActivity
+import com.example.photomap.ui.LoginActivity
 import com.example.photomap.ui.MainActivity
 import com.example.photomap.ui.MainViewModel
 import com.example.photomap.ui.dialog.ChoosePhotoDialog
@@ -29,17 +28,18 @@ import com.example.photomap.ui.dialog.DialogClickListener
 import com.example.photomap.util.AppCameraUtils
 import com.example.photomap.util.AppMapUtils
 import com.example.photomap.util.Constants.FILE_PROVIDER_PATH
+import com.example.photomap.util.Constants.LONG_CLICK_REQUEST_CODE_IMAGE_PICK
+import com.example.photomap.util.Constants.LONG_CLICK_REQUEST_CODE_TAKE_PHOTO
 import com.example.photomap.util.Constants.MAP_MARK_ITEM
-import com.example.photomap.util.Constants.REQUEST_CODE_IMAGE_PICK
-import com.example.photomap.util.Constants.REQUEST_CODE_TAKE_PHOTO
+import com.example.photomap.util.Constants.MY_LOCATION_REQUEST_CODE_IMAGE_PICK
+import com.example.photomap.util.Constants.MY_LOCATION_REQUEST_CODE_TAKE_PHOTO
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.database.collection.LLRBNode
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -61,6 +61,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var myLocation: Location
     private var followButtonState = true
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +69,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         activity?.let {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(it)
         }
+        auth = FirebaseAuth.getInstance()
     }
 
     override fun onCreateView(
@@ -94,7 +96,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                     )
                         .also {
-                            startActivityForResult(it, REQUEST_CODE_IMAGE_PICK)
+                            startActivityForResult(it, MY_LOCATION_REQUEST_CODE_IMAGE_PICK)
                         }
                 }
 
@@ -116,7 +118,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     }
                     Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {
                         it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
-                        startActivityForResult(it, REQUEST_CODE_TAKE_PHOTO)
+                        startActivityForResult(it, MY_LOCATION_REQUEST_CODE_TAKE_PHOTO)
                     }
                 }
             }).show()
@@ -126,7 +128,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         //taking photo from camera
-        if (requestCode == REQUEST_CODE_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+        if (requestCode == MY_LOCATION_REQUEST_CODE_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             photoUri = Uri.fromFile(photoFile)
             photoFile?.name?.let {
                 mainViewModel.uploadMapMark(
@@ -135,7 +137,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     myLocation.longitude
                 )
             }
-        } else if (requestCode == REQUEST_CODE_IMAGE_PICK) {
+        } else if (requestCode == LONG_CLICK_REQUEST_CODE_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+            photoUri = Uri.fromFile(photoFile)
+            photoFile?.name?.let {
+                mainViewModel.uploadMapMark(
+                    photoUri, it.substring(0, 22),
+                    longClickPhotoLatLng.latitude,
+                    longClickPhotoLatLng.longitude
+                )
+            }
+        } else if (requestCode == MY_LOCATION_REQUEST_CODE_IMAGE_PICK) {
             //taking photo from gallery
             data?.data?.let {
                 Log.d("myLog", "taking photo from gallery")
@@ -148,6 +159,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         fileName,
                         myLocation.latitude,
                         myLocation.longitude
+                    )
+                }
+            }
+        } else if (requestCode == LONG_CLICK_REQUEST_CODE_IMAGE_PICK) {
+            data?.data?.let {
+                Log.d("myLog", "Long click taking photo from gallery")
+                val file = it
+                val fileName =
+                    this.activity?.let { activity -> AppCameraUtils.createPhotoName(activity) }
+                if (fileName != null) {
+                    mainViewModel.uploadMapMark(
+                        file,
+                        fileName,
+                        longClickPhotoLatLng.latitude,
+                        longClickPhotoLatLng.longitude
                     )
                 }
             }
@@ -164,6 +190,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             R.id.action_categories -> findNavController().navigate(
                 R.id.action_mapFragment_to_categoriesFragment
             )
+            R.id.action_log_out -> {
+                auth.signOut()
+                val loginIntent = Intent(activity, LoginActivity::class.java)
+                startActivity(loginIntent)
+                activity?.finish()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -223,31 +255,43 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 //        val myLatLng = LatLng(myLocation.latitude, myLocation.longitude)
         mainViewModel.followButtonLiveDataState.observe(viewLifecycleOwner, {
             followButtonState = it
-            if (followButtonState) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    while (followButtonState) {
-                        fusedLocationClient.lastLocation
-                            .addOnSuccessListener { location: Location ->
-                                myLocation = location
-                                map.animateCamera(
-                                    CameraUpdateFactory.newLatLngZoom(
-                                        LatLng(
-                                            location.latitude,
-                                            location.longitude
-                                        ), zoomLevel
+            activity?.let { activity ->
+                if (followButtonState) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        while (followButtonState) {
+                            fusedLocationClient.lastLocation
+                                .addOnSuccessListener { location: Location ->
+                                    myLocation = location
+                                    map.animateCamera(
+                                        CameraUpdateFactory.newLatLngZoom(
+                                            LatLng(
+                                                location.latitude,
+                                                location.longitude
+                                            ), zoomLevel
+                                        )
                                     )
-                                )
-                            }
-                        delay(5000)
+                                }
+                            delay(5000)
+                        }
                     }
+                    AppMapUtils.changeMapUiState(map, followButtonState)
+                    floatingButtonFollow.backgroundTintList =
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                activity,
+                                R.color.floating_button_enable
+                            )
+                        )
+                } else {
+                    AppMapUtils.changeMapUiState(map, followButtonState)
+                    floatingButtonFollow.backgroundTintList =
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                activity,
+                                R.color.floating_button_disable
+                            )
+                        )
                 }
-                AppMapUtils.changeMapUiState(map, followButtonState)
-                floatingButtonFollow.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.floating_button_enable))
-            } else {
-                AppMapUtils.changeMapUiState(map, followButtonState)
-                floatingButtonFollow.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.floating_button_disable))
             }
         })
         map.uiSettings.isMyLocationButtonEnabled = false
@@ -258,17 +302,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 mapOfMapMarks[mapMark.name] = mapMark
             }
         })
-        val minsk = LatLng(53.893009, 27.567444)
-        map.addMarker(MarkerOptions().position(minsk).title("Minsk"))
-//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(minsk, zoomLevel))
+
         map.setInfoWindowAdapter(this.activity?.let {
             AppMapUtils.CustomMapInfoWindowAdapter(
                 it,
                 mapOfMapMarks
             )
         })
-        map.setOnMapLongClickListener {
-            longClickPhotoLatLng = LatLng(it.latitude, it.longitude)
+        map.setOnMapLongClickListener { latLng ->
+            longClickPhotoLatLng = LatLng(latLng.latitude, latLng.longitude)
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(longClickPhotoLatLng, zoomLevel))
             ChoosePhotoDialog(activity as MainActivity, object : DialogClickListener {
                 override fun chooseImage() {
@@ -277,7 +319,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                     )
                         .also {
-                            startActivityForResult(it, REQUEST_CODE_IMAGE_PICK)
+                            startActivityForResult(it, LONG_CLICK_REQUEST_CODE_IMAGE_PICK)
                         }
                 }
 
@@ -301,7 +343,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                     ).also {
                         it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
-                        startActivityForResult(it, REQUEST_CODE_TAKE_PHOTO)
+                        startActivityForResult(it, LONG_CLICK_REQUEST_CODE_TAKE_PHOTO)
                     }
                 }
             }).show()

@@ -2,9 +2,11 @@ package com.example.photomap.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.photomap.R
+import com.example.photomap.util.Constants.REQUEST_CODE_SIGN_IN
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -19,10 +21,6 @@ import kotlinx.coroutines.withContext
 
 
 class LoginActivity : AppCompatActivity() {
-
-    companion object{
-        const val REQUEST_CODE_SIGN_IN = 0
-    }
 
     private lateinit var auth: FirebaseAuth
 
