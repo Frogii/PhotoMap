@@ -18,31 +18,29 @@
 
     <TextView
         android:id="@+id/textViewDetailsDate"
+        style="@style/CustomText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="@dimen/details_start_margin_text"
+        android:layout_marginTop="@dimen/details_top_margin_text"
         android:drawableStart="@drawable/ic_date"
-        android:drawablePadding="20dp"
+        android:drawablePadding="@dimen/details_drawable_padding_text"
         android:gravity="center"
         android:text="@string/default_photo_date"
-        android:textColor="@color/black_text"
-        android:textSize="@dimen/main_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewDetailsPhoto" />
 
     <TextView
         android:id="@+id/textViewDetailsCategory"
+        style="@style/CustomText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="@dimen/details_start_margin_text"
+        android:layout_marginTop="@dimen/details_top_margin_text"
         android:drawableStart="@drawable/ic_map_mark"
-        android:drawablePadding="20dp"
+        android:drawablePadding="@dimen/details_drawable_padding_text"
         android:gravity="center"
         android:text="@string/default_category"
-        android:textColor="@color/black_text"
-        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewDetailsDate" />
 
@@ -50,24 +48,23 @@
         android:id="@+id/imageViewDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="@dimen/details_start_margin_text"
+        android:layout_marginTop="@dimen/details_top_margin_text"
         android:src="@drawable/ic_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewDetailsCategory" />
 
     <EditText
         android:id="@+id/editTextTextDetailsDescription"
+        style="@style/CustomText"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="@dimen/details_start_margin_edit_text"
+        android:layout_marginTop="@dimen/details_top_margin_text"
         android:background="@android:color/transparent"
         android:inputType="textMultiLine"
         android:text="@string/default_photo_description"
         android:textAlignment="inherit"
-        android:textColor="@color/black_text"
-        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/imageViewDescription"
         app:layout_constraintTop_toBottomOf="@+id/textViewDetailsCategory" />
 

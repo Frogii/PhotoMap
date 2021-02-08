@@ -18,25 +18,23 @@
 
     <TextView
         android:id="@+id/textViewInfoWindowDescription"
+        style="@style/InfoWindowCustomText"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:maxLines="3"
+        android:layout_marginStart="@dimen/info_window_start_margin_text"
         android:ellipsize="end"
+        android:maxLines="3"
         android:text="@string/default_photo_description"
-        android:textColor="@color/black_text"
-        android:textSize="11sp"
         app:layout_constraintStart_toEndOf="@+id/imageViewInfoWindow"
         app:layout_constraintTop_toTopOf="@+id/imageViewInfoWindow" />
 
     <TextView
         android:id="@+id/textViewInfoWindowDate"
+        style="@style/InfoWindowCustomText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/info_window_start_margin_text"
         android:text="@string/default_photo_date"
-        android:textColor="@color/black_text"
-        android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="@+id/imageViewInfoWindow"
         app:layout_constraintStart_toEndOf="@+id/imageViewInfoWindow" />
 </androidx.constraintlayout.widget.ConstraintLayout>

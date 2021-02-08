@@ -19,8 +19,8 @@
         android:id="@+id/floatingButtonPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="@dimen/map_end_margin_button"
+        android:layout_marginBottom="@dimen/map_bottom_margin_button"
         android:theme="@style/FloatingButtonPhoto"
         app:layout_constraintBottom_toTopOf="@+id/floatingButtonFollow"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -29,8 +29,8 @@
         android:id="@+id/floatingButtonFollow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="@dimen/map_end_margin_button"
+        android:layout_marginBottom="@dimen/map_bottom_margin_button"
         android:theme="@style/FloatingButtonFollow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

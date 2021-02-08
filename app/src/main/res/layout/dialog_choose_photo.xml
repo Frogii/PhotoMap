@@ -6,23 +6,23 @@
 
     <TextView
         android:id="@+id/textViewGallery"
+        style="@style/DialogCustomText"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="@dimen/choose_photo_dialog_margin_start_text"
+        android:layout_marginTop="@dimen/choose_photo_dialog_margin_top_text"
         android:text="@string/dialog_choose_from_gallery"
-        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewTakePhoto"
+        style="@style/DialogCustomText"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginTop="@dimen/choose_photo_dialog_margin_top_text"
+        android:layout_marginBottom="@dimen/choose_photo_dialog_margin_bottom_text"
         android:text="@string/dialog_take_a_picture"
-        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/textViewGallery"
         app:layout_constraintTop_toBottomOf="@+id/textViewGallery" />

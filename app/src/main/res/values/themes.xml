@@ -30,11 +30,11 @@
 
     <style name="CategoriesCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:button">@drawable/check_box_selector</item>
-        <item name="android:paddingLeft">@dimen/category_padding_left</item>
+        <item name="android:paddingLeft">@dimen/category_left_padding</item>
         <item name="android:checked">true</item>
-        <item name="android:layout_marginStart">@dimen/category_margin_start</item>
-        <item name="android:layout_marginTop">@dimen/category_margin_top</item>
-        <item name="android:layout_marginBottom">@dimen/category_margin_bottom</item>
+        <item name="android:layout_marginStart">@dimen/category_start_margin</item>
+        <item name="android:layout_marginTop">@dimen/category_top_margin</item>
+        <item name="android:layout_marginBottom">@dimen/category_bottom_margin</item>
     </style>
 
     <style name="FloatingButtonPhoto" parent="Widget.Design.FloatingActionButton">
@@ -48,4 +48,37 @@
         <item name="colorOnSecondary">@color/white</item>
         <item name="android:src">@drawable/ic_floating_button_follow</item>
     </style>
+
+    <style name="CustomText" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/black_text</item>
+        <item name="android:textSize">@dimen/main_text_size</item>
+    </style>
+
+    <style name="DialogCustomText" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/main_text_size</item>
+    </style>
+
+    <style name="InfoWindowCustomText" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/black_text</item>
+        <item name="android:textSize">@dimen/info_window_text_size</item>
+    </style>
+
+    <style name="PhotoCustomText" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/white_text</item>
+    </style>
+
+    <style name="LoginCustomText" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textColor">@color/white_text</item>
+        <item name="android:textSize">@dimen/login_big_text</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="LoginCustomButton" parent="Widget.AppCompat.Button">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:drawableStart">@drawable/ic_google</item>
+        <item name="android:text">@string/log_in_button</item>
+        <item name="android:textColor">@color/black_text</item>
+    </style>
+
 </resources>

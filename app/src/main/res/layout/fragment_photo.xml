@@ -19,27 +19,27 @@
 
     <TextView
         android:id="@+id/textViewFullPhotoDescription"
+        style="@style/PhotoCustomText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="@dimen/photo_start_margin_text"
+        android:layout_marginEnd="@dimen/photo_end_margin_text"
+        android:layout_marginBottom="@dimen/photo_bottom_margin_text"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/default_photo_description"
-        android:textColor="@color/white_text"
         app:layout_constraintBottom_toTopOf="@+id/textViewFullPhotoDate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textViewFullPhotoDate"
+        style="@style/PhotoCustomText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="@dimen/photo_start_margin_text"
         android:layout_marginBottom="16dp"
         android:text="@string/default_photo_date"
-        android:textColor="@color/white_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
