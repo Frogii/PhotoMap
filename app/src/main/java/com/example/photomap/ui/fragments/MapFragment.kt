@@ -1,9 +1,7 @@
 package com.example.photomap.ui.fragments
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.location.Location
 import android.net.Uri
@@ -11,8 +9,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -27,6 +23,7 @@ import com.example.photomap.ui.dialog.ChoosePhotoDialog
 import com.example.photomap.ui.dialog.DialogClickListener
 import com.example.photomap.util.AppCameraUtils
 import com.example.photomap.util.AppMapUtils
+import com.example.photomap.util.AppPermissionUtils
 import com.example.photomap.util.Constants.FILE_PROVIDER_PATH
 import com.example.photomap.util.Constants.LONG_CLICK_REQUEST_CODE_IMAGE_PICK
 import com.example.photomap.util.Constants.LONG_CLICK_REQUEST_CODE_TAKE_PHOTO
@@ -232,25 +229,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     companion object {
         private const val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
-        private const val LOCATION_PERMISSION_REQUEST = 1
     }
 
 
     override fun onMapReady(p0: GoogleMap) {
         val zoomLevel = 12f
         map = p0
-        getMyLocation()
-        if (activity?.let {
-                ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION)
-            } == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (AppPermissionUtils.checkMyLocationPermission(activity as MainActivity)) {
             map.isMyLocationEnabled = true
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location: Location ->
-                    myLocation = location
-                    val myLatLong = LatLng(location.latitude, location.longitude)
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLong, zoomLevel))
-                }
+            getMyLocation()
         }
 //        val myLatLng = LatLng(myLocation.latitude, myLocation.longitude)
         mainViewModel.followButtonLiveDataState.observe(viewLifecycleOwner, {
@@ -371,53 +358,22 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             mainViewModel.followButtonLiveDataState.value = !followButtonState
             if (followButtonState) {
                 getMyLocation()
-                Log.d("mapLog", "getloc")
-                map.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        LatLng(myLocation.latitude, myLocation.longitude), zoomLevel
-                    )
-                )
             }
         }
     }
 
     private fun getMyLocation() {
-        if (activity?.let {
-                ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION)
-            } == PackageManager.PERMISSION_GRANTED
-        ) {
-            map.isMyLocationEnabled = true
+        val zoomLevel = 12f
+        if (AppPermissionUtils.checkMyLocationPermission(activity as MainActivity)) {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location ->
                     myLocation = location
+                    map.moveCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(myLocation.latitude, myLocation.longitude), zoomLevel
+                        )
+                    )
                 }
-
-        } else {
-            activity?.let {
-                ActivityCompat.requestPermissions(
-                    it, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    LOCATION_PERMISSION_REQUEST
-                )
-            }
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == LOCATION_PERMISSION_REQUEST) {
-            if (grantResults.contains(PackageManager.PERMISSION_GRANTED)) {
-                getMyLocation()
-            } else {
-                Toast.makeText(
-                    activity,
-                    getString(R.string.location_permission_not_granted),
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-            }
         }
     }
 }
