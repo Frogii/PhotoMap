@@ -44,9 +44,13 @@ class LoginActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SIGN_IN) {
-            val account = GoogleSignIn.getSignedInAccountFromIntent(data).result
-            account?.let {
-                googleAuthForFirebase(it)
+            try {
+                val account = GoogleSignIn.getSignedInAccountFromIntent(data).result
+                account?.let {
+                    googleAuthForFirebase(it)
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this, getString(R.string.login_error_message), Toast.LENGTH_LONG).show()
             }
         }
     }

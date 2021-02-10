@@ -5,6 +5,7 @@ object Constants {
     const val MAP_MARK_COLLECTION = "mapMarks"
     const val STORAGE_PATH = "mapPhotos/"
     const val REQUEST_CODE_SIGN_IN = 100
+    const val PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 101
     const val MY_LOCATION_REQUEST_CODE_IMAGE_PICK = 0
     const val LONG_CLICK_REQUEST_CODE_IMAGE_PICK = 2
     const val MY_LOCATION_REQUEST_CODE_TAKE_PHOTO = 1

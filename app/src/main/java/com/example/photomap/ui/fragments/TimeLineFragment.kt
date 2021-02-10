@@ -2,6 +2,7 @@ package com.example.photomap.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -14,6 +15,8 @@ import com.example.photomap.model.MapMark
 import com.example.photomap.ui.DetailsActivity
 import com.example.photomap.ui.MainActivity
 import com.example.photomap.ui.MainViewModel
+import com.example.photomap.util.AppConnectionUtils
+import com.example.photomap.util.AppPermissionUtils
 import com.example.photomap.util.Constants.MAP_MARK_ITEM
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.fragment_time_line.*
@@ -44,9 +47,18 @@ class TimeLineFragment : Fragment(), ClickableRecyclerItem {
         mainViewModel = (activity as MainActivity).mainViewModel
         mainViewModel.dataList.observe(viewLifecycleOwner, {
             timelineAdapter.setList(it)
-            }
+        }
         )
-        mainViewModel.getAllMapMarks()
+
+        if (AppConnectionUtils.checkConnection(activity as MainActivity)) {
+            Log.d("myLog", "from NET")
+            mainViewModel.getAllMapMarks()
+        } else {
+            Log.d("myLog", "from DB")
+            if (AppPermissionUtils.checkReadStoragePermission(activity as MainActivity))
+                mainViewModel.getMarksFromDB()
+        }
+
     }
 
     private fun setupRecycler() {
@@ -61,7 +73,7 @@ class TimeLineFragment : Fragment(), ClickableRecyclerItem {
         inflater.inflate(R.menu.menu_timeline_fragment, menu)
         val searchMenuItem = menu.findItem(R.id.action_search)
         val actionSearchView = searchMenuItem.actionView as SearchView
-        actionSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        actionSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(queryString: String?): Boolean {
                 queryString?.let {
                     mainViewModel.searchMapMarks(queryString)

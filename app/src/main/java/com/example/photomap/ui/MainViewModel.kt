@@ -36,7 +36,6 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
         followButtonLiveDataState.value = true
         categoryLiveDataList.value = categoryList
         checkBoxLiveDataStateMap.postValue(checkBoxStateMap)
-        getAllMapMarks()
     }
 
     fun uploadMapMark(imageFile: Uri, imageName: String, imgLat: Double, imgLng: Double) {
@@ -50,7 +49,17 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
                             Date(), AppDateUtils.longPhotoDatePattern
                         ), imageLatitude = imgLat, imageLongitude = imgLng
                     )
+                    val markForDB = MapMark(
+                        name = imageName,
+                        url = imageFile.toString(),
+                        date = AppDateUtils.formatDate(
+                            Date(), AppDateUtils.longPhotoDatePattern
+                        ),
+                        imageLatitude = imgLat,
+                        imageLongitude = imgLng
+                    )
                     mapMarkRepository.uploadMapMark(mark)
+                    mapMarkRepository.addMarkToDB(markForDB)
                     mapMarkList.add(mark)
                     dataList.postValue(mapMarkList)
                     Log.d("ViewModelLog", "image uploaded")
@@ -80,6 +89,18 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
             }
             this@MainViewModel.dataList.postValue(mapMarkList)
             Log.d("ViewModelLog", "download")
+        }
+    }
+
+    fun getMarksFromDB() {
+        viewModelScope.launch {
+            mapMarkList.clear()
+            categoryLiveDataList.value?.let {
+                for (mark in mapMarkRepository.getMarksFromDB(it)) {
+                    mapMarkList.add(mark)
+                }
+            }
+            dataList.postValue(mapMarkList)
         }
     }
 

@@ -19,6 +19,7 @@ class DetailsViewModel(private val mapMarkRepository: MapMarkRepository) : ViewM
             put(CATEGORY_MAP_KEY, mapMark.category)
         }
         viewModelScope.launch {
+            mapMarkRepository.addMarkToDB(mapMark)
             val mapMarkQuery = mapMarkRepository.getMapMark(mapMark)
             if (mapMarkQuery.documents.isNotEmpty()) {
                 try {

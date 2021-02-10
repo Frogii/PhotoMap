@@ -1,6 +1,9 @@
 package com.example.photomap.repository
 
+import android.content.Context
 import android.net.Uri
+import androidx.room.Room
+import com.example.photomap.db.MapMarkLocalDatabase
 import com.example.photomap.firebase.FirebaseInstance
 import com.example.photomap.model.MapMark
 import com.example.photomap.util.Constants.MAP_MARK_FIELD_NAME
@@ -10,15 +13,31 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 
-class MapMarkRepository private constructor() {
-
-    private object HOLDER {
-        val INSTANCE = MapMarkRepository()
-    }
+class MapMarkRepository(context: Context, private val database: MapMarkLocalDatabase) {
 
     companion object {
-        val instance: MapMarkRepository by lazy { HOLDER.INSTANCE }
+        @Volatile
+        private var instance: MapMarkRepository? = null
+        private val LOCK = Any()
+
+        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
+            instance ?: createRepository(context).also {
+                instance = it
+            }
+        }
+
+        private fun createRepository(context: Context) =
+            MapMarkRepository(context, MapMarkLocalDatabase.invoke(context))
     }
+
+    suspend fun addMarkToDB(mapMark: MapMark) {
+        database.getMapMarkDao().addMapMark(mapMark)
+    }
+
+    suspend fun getMarksFromDB(filter: MutableList<String>): List<MapMark> {
+        return database.getMapMarkDao().getAllMapMarks(filter)
+    }
+
 
     suspend fun uploadPhoto(imageFile: Uri, imageName: String) {
         FirebaseInstance.fireBaseImageStorage
@@ -41,7 +60,8 @@ class MapMarkRepository private constructor() {
     }
 
     suspend fun getMapMark(mapMark: MapMark): QuerySnapshot {
-        return FirebaseInstance.fireStoreDB.whereEqualTo(MAP_MARK_FIELD_NAME, mapMark.name).get().await()
+        return FirebaseInstance.fireStoreDB.whereEqualTo(MAP_MARK_FIELD_NAME, mapMark.name).get()
+            .await()
     }
 
     suspend fun updateMapMark(mapMarkQuery: QuerySnapshot, newMapMarkMap: Map<String, Any>) {

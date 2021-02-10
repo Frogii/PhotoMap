@@ -22,7 +22,7 @@ class DetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_details)
 
         val detailsViewModelProviderFactory =
-            DetailsViewModelProviderFactory(MapMarkRepository.instance)
+            DetailsViewModelProviderFactory(MapMarkRepository.invoke(this))
         detailsViewModel = ViewModelProvider(
             this, detailsViewModelProviderFactory
         ).get(DetailsViewModel::class.java)
