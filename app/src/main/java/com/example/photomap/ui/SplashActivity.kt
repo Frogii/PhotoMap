@@ -22,8 +22,8 @@ class SplashActivity : AppCompatActivity() {
         val user = mAuth.currentUser
 
         CoroutineScope(Dispatchers.IO).launch {
-            delay(1500)
-            if (user != null){
+            delay(1000)
+            if (user != null) {
                 val mainActivityIntent = Intent(this@SplashActivity, MainActivity::class.java)
                 startActivity(mainActivityIntent)
                 finish()

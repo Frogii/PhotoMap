@@ -20,7 +20,7 @@ class DetailsViewModel(private val mapMarkRepository: MapMarkRepository) : ViewM
         }
         viewModelScope.launch {
             mapMarkRepository.addMarkToDB(mapMark)
-            val mapMarkQuery = mapMarkRepository.getMapMark(mapMark)
+            val mapMarkQuery = mapMarkRepository.getMarkFromFirebase(mapMark)
             if (mapMarkQuery.documents.isNotEmpty()) {
                 try {
                     mapMarkRepository.updateMapMark(mapMarkQuery, mapOfMapMark)

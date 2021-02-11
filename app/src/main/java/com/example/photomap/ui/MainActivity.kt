@@ -54,12 +54,12 @@ class MainActivity : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
         if (AppConnectionUtils.checkConnection(this)) {
-            mainViewModel.getAllMapMarks()
+            mainViewModel.getAllMarksFromFirebase()
             Log.d("myLog", "from NET")
         } else {
             Log.d("myLog", "from DB")
             if (AppPermissionUtils.checkReadStoragePermission(this@MainActivity))
-                mainViewModel.getMarksFromDB()
+                mainViewModel.getMarksFromLocalDB()
         }
     }
 

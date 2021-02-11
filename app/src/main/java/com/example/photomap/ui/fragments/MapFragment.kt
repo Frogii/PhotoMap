@@ -80,7 +80,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         mapViewBundle = savedInstanceState?.getBundle(MAP_VIEW_BUNDLE_KEY)
         mainViewModel = (activity as MainActivity).mainViewModel
-        mainViewModel.getAllMapMarks()
+        mainViewModel.getAllMarksFromFirebase()
 
         mapView.onCreate(mapViewBundle)
         mapView.getMapAsync(this)
@@ -334,7 +334,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     }
                 }
             }).show()
-            mainViewModel.getAllMapMarks()
+            mainViewModel.getAllMarksFromFirebase()
         }
 
         map.setOnInfoWindowClickListener { marker ->

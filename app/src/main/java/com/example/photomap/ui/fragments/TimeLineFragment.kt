@@ -52,11 +52,11 @@ class TimeLineFragment : Fragment(), ClickableRecyclerItem {
 
         if (AppConnectionUtils.checkConnection(activity as MainActivity)) {
             Log.d("myLog", "from NET")
-            mainViewModel.getAllMapMarks()
+            mainViewModel.getAllMarksFromFirebase()
         } else {
             Log.d("myLog", "from DB")
             if (AppPermissionUtils.checkReadStoragePermission(activity as MainActivity))
-                mainViewModel.getMarksFromDB()
+                mainViewModel.getMarksFromLocalDB()
         }
 
     }

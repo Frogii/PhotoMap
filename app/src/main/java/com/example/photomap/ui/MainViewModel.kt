@@ -14,6 +14,8 @@ import com.example.photomap.util.Constants.MAP_MARK_FIELD_CATEGORY
 import com.example.photomap.util.Constants.NATURE_CATEGORY
 import com.example.photomap.util.Constants.NULL_CATEGORY
 import com.google.firebase.firestore.ktx.toObject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.functions.Supplier
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -33,6 +35,7 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
     val followButtonLiveDataState: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
+//        syncLocalDatabaseWithFirebase()
         followButtonLiveDataState.value = true
         categoryLiveDataList.value = categoryList
         checkBoxLiveDataStateMap.postValue(checkBoxStateMap)
@@ -40,26 +43,26 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
 
     fun uploadMapMark(imageFile: Uri, imageName: String, imgLat: Double, imgLng: Double) {
         viewModelScope.launch {
+            val markForDB = MapMark(
+                name = imageName,
+                url = imageFile.toString(),
+                date = AppDateUtils.formatDate(
+                    Date(), AppDateUtils.longPhotoDatePattern
+                ),
+                imageLatitude = imgLat,
+                imageLongitude = imgLng
+            )
+            mapMarkRepository.addMarkToDB(markForDB)
             try {
                 imageName.let {
-                    mapMarkRepository.uploadPhoto(imageFile, imageName)
-                    val imageUrl = mapMarkRepository.getImageUrl(imageName)
+                    mapMarkRepository.uploadPhotoToFireStorage(imageFile, imageName)
+                    val imageUrl = mapMarkRepository.getImageUrlFromFireStorage(imageName)
                     val mark = MapMark(
                         name = imageName, url = imageUrl, date = AppDateUtils.formatDate(
                             Date(), AppDateUtils.longPhotoDatePattern
                         ), imageLatitude = imgLat, imageLongitude = imgLng
                     )
-                    val markForDB = MapMark(
-                        name = imageName,
-                        url = imageFile.toString(),
-                        date = AppDateUtils.formatDate(
-                            Date(), AppDateUtils.longPhotoDatePattern
-                        ),
-                        imageLatitude = imgLat,
-                        imageLongitude = imgLng
-                    )
-                    mapMarkRepository.uploadMapMark(mark)
-                    mapMarkRepository.addMarkToDB(markForDB)
+                    mapMarkRepository.uploadMarkToFirebase(mark)
                     mapMarkList.add(mark)
                     dataList.postValue(mapMarkList)
                     Log.d("ViewModelLog", "image uploaded")
@@ -70,12 +73,12 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
         }
     }
 
-    fun getAllMapMarks() {
+    fun getAllMarksFromFirebase() {
         viewModelScope.launch {
             mapMarkList.clear()
             val querySnapshot =
                 categoryLiveDataList.value?.let {
-                    mapMarkRepository.getAllMapMarks(
+                    mapMarkRepository.getAllMarksFromFirebase(
                         MAP_MARK_FIELD_CATEGORY,
                         it
                     )
@@ -92,11 +95,11 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
         }
     }
 
-    fun getMarksFromDB() {
+    fun getMarksFromLocalDB() {
         viewModelScope.launch {
             mapMarkList.clear()
             categoryLiveDataList.value?.let {
-                for (mark in mapMarkRepository.getMarksFromDB(it)) {
+                for (mark in mapMarkRepository.getAllMarksFromDB(it)) {
                     mapMarkList.add(mark)
                 }
             }
@@ -109,7 +112,7 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
             mapMarkList.clear()
             val querySnapshot =
                 categoryLiveDataList.value?.let {
-                    mapMarkRepository.searchMapMarks(
+                    mapMarkRepository.searchMarks(
                         MAP_MARK_FIELD_CATEGORY,
                         it,
                         query
@@ -126,4 +129,31 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
             Log.d("ViewModelLog", "search")
         }
     }
+
+//    private fun syncLocalDatabaseWithFirebase() {
+//        val marksFromFirebase: MutableList<MapMark> = mutableListOf()
+//        val marksFromLocalDB: MutableList<MapMark> = mutableListOf()
+//        viewModelScope.launch {
+//            val firebaseObs = Observable.fromIterable(
+//                mapMarkRepository.getAllMarksFromFirebase(
+//                    MAP_MARK_FIELD_CATEGORY,
+//                    categoryList
+//                ).documents
+//            )
+//                .map {
+//                    it.toObject<MapMark>()
+//                }.map {
+//                    Log.d("ViewModelLog", "from FireBase $it")
+//                }.subscribe()
+//            val localObs = Observable.fromIterable(
+//                mapMarkRepository.getAllMarksFromDB(categoryList)
+//            ).map {
+//                Log.d("ViewModelLog", "from DB $it")
+//            }.subscribe()
+////            Observable.merge(firebaseObs, localObs).map {
+////
+////            }
+//
+//        }
+//    }
 }

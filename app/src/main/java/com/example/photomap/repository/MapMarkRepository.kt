@@ -34,32 +34,32 @@ class MapMarkRepository(context: Context, private val database: MapMarkLocalData
         database.getMapMarkDao().addMapMark(mapMark)
     }
 
-    suspend fun getMarksFromDB(filter: MutableList<String>): List<MapMark> {
+    suspend fun getAllMarksFromDB(filter: MutableList<String>): List<MapMark> {
         return database.getMapMarkDao().getAllMapMarks(filter)
     }
 
 
-    suspend fun uploadPhoto(imageFile: Uri, imageName: String) {
+    suspend fun uploadPhotoToFireStorage(imageFile: Uri, imageName: String) {
         FirebaseInstance.fireBaseImageStorage
             .child("${STORAGE_PATH}$imageName")
             .putFile(imageFile)
             .await()
     }
 
-    suspend fun getImageUrl(imageName: String): String {
+    suspend fun getImageUrlFromFireStorage(imageName: String): String {
         return FirebaseInstance.fireBaseImageStorage.child("$STORAGE_PATH$imageName")
             .downloadUrl.await().toString()
     }
 
-    suspend fun uploadMapMark(mapMark: MapMark) {
+    suspend fun uploadMarkToFirebase(mapMark: MapMark) {
         FirebaseInstance.fireStoreDB.add(mapMark)
     }
 
-    suspend fun getAllMapMarks(category: String, filter: List<String>): QuerySnapshot {
+    suspend fun getAllMarksFromFirebase(category: String, filter: List<String>): QuerySnapshot {
         return FirebaseInstance.fireStoreDB.whereIn(category, filter).get().await()
     }
 
-    suspend fun getMapMark(mapMark: MapMark): QuerySnapshot {
+    suspend fun getMarkFromFirebase(mapMark: MapMark): QuerySnapshot {
         return FirebaseInstance.fireStoreDB.whereEqualTo(MAP_MARK_FIELD_NAME, mapMark.name).get()
             .await()
     }
@@ -72,7 +72,7 @@ class MapMarkRepository(context: Context, private val database: MapMarkLocalData
             ).await()
     }
 
-    suspend fun searchMapMarks(
+    suspend fun searchMarks(
         category: String,
         filter: List<String>,
         query: String

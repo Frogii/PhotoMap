@@ -90,4 +90,9 @@ dependencies {
 
     //Location
     implementation 'com.google.android.gms:play-services-location:17.1.0'
+
+    //RxJava
+    implementation "io.reactivex.rxjava3:rxjava:3.0.7"
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.4.2'
 }
