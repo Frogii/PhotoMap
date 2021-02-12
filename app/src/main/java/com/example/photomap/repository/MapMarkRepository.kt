@@ -2,7 +2,6 @@ package com.example.photomap.repository
 
 import android.content.Context
 import android.net.Uri
-import androidx.room.Room
 import com.example.photomap.db.MapMarkLocalDatabase
 import com.example.photomap.firebase.FirebaseInstance
 import com.example.photomap.model.MapMark

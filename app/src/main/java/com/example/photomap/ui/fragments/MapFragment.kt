@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -247,16 +248,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     CoroutineScope(Dispatchers.IO).launch {
                         while (followButtonState) {
                             fusedLocationClient.lastLocation
-                                .addOnSuccessListener { location: Location ->
-                                    myLocation = location
-                                    map.animateCamera(
-                                        CameraUpdateFactory.newLatLngZoom(
-                                            LatLng(
-                                                location.latitude,
-                                                location.longitude
-                                            ), zoomLevel
+                                .addOnSuccessListener { location: Location? ->
+                                    location?.let {
+                                        myLocation = location
+                                        map.animateCamera(
+                                            CameraUpdateFactory.newLatLngZoom(
+                                                LatLng(
+                                                    location.latitude,
+                                                    location.longitude
+                                                ), zoomLevel
+                                            )
                                         )
-                                    )
+                                    }
                                 }
                             delay(5000)
                         }
@@ -366,13 +369,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val zoomLevel = 12f
         if (AppPermissionUtils.checkMyLocationPermission(activity as MainActivity)) {
             fusedLocationClient.lastLocation
-                .addOnSuccessListener { location: Location ->
-                    myLocation = location
-                    map.moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            LatLng(myLocation.latitude, myLocation.longitude), zoomLevel
+                .addOnSuccessListener { location: Location? ->
+                    location?.let {
+                        myLocation = location
+                        map.moveCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(myLocation.latitude, myLocation.longitude), zoomLevel
+                            )
                         )
-                    )
+                    }
+                    if (location == null) {
+                        Toast.makeText(activity, "Enable My Location!", Toast.LENGTH_LONG).show()
+                    }
                 }
         }
     }
