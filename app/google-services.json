@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "76236369100",
-    "project_id": "photomap-4a142",
-    "storage_bucket": "photomap-4a142.appspot.com"
+    "project_number": "529151387003",
+    "project_id": "photomapv2",
+    "storage_bucket": "photomapv2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:76236369100:android:dd704ff68e0c0d06cca669",
+        "mobilesdk_app_id": "1:529151387003:android:00d82fc83c18268b5049de",
         "android_client_info": {
           "package_name": "com.example.photomap"
         }
       },
       "oauth_client": [
         {
-          "client_id": "76236369100-ian32pi9bna29889dvjmv7viea9r0mtu.apps.googleusercontent.com",
+          "client_id": "529151387003-34fqfokc0i0u6ln2rtl9313o340v9iu0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.photomap",
+            "certificate_hash": "8c3ffd13138466849b74f8d4db1eb5748b5e365b"
+          }
+        },
+        {
+          "client_id": "529151387003-6o01l3eh87eg5r4rkmkl13qfhkjkv69m.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAhD7vC3mKZpnR0_DIeatSD0qkK5DynCvM"
+          "current_key": "AIzaSyCJHS7Sy9t0AQ2d1ZTPs2t_J22nti-1W0c"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "76236369100-ian32pi9bna29889dvjmv7viea9r0mtu.apps.googleusercontent.com",
+              "client_id": "529151387003-6o01l3eh87eg5r4rkmkl13qfhkjkv69m.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

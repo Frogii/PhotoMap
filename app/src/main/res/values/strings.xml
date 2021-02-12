@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">PhotoMap</string>
-    <string name="firebase_auth_id">76236369100-ian32pi9bna29889dvjmv7viea9r0mtu.apps.googleusercontent.com</string>
-    <string name="google_maps_key">AIzaSyAhD7vC3mKZpnR0_DIeatSD0qkK5DynCvM</string>
+    <string name="firebase_auth_id">529151387003-6o01l3eh87eg5r4rkmkl13qfhkjkv69m.apps.googleusercontent.com</string>
+    <string name="google_maps_key">AIzaSyCJHS7Sy9t0AQ2d1ZTPs2t_J22nti-1W0c</string>
     <string name="log_in_button">Log in with google</string>
     <string name="welcome_text">Welcome</string>
     <string name="search_menu_item">Search</string>
