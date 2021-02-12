@@ -14,14 +14,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "76236369100-2f5228ntpk3uinb89dbk1d6p60kkotsm.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.photomap",
-            "certificate_hash": "8c3ffd13138466849b74f8d4db1eb5748b5e365b"
-          }
-        },
-        {
           "client_id": "76236369100-ian32pi9bna29889dvjmv7viea9r0mtu.apps.googleusercontent.com",
           "client_type": 3
         }
