@@ -26,6 +26,7 @@
         android:src="@drawable/ic_map"
         app:layout_constraintBottom_toTopOf="@+id/textViewSplashScreen"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:tint="@color/splash_screen_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

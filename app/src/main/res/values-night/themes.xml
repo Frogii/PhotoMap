@@ -2,15 +2,61 @@
     <!-- Base application theme. -->
     <style name="Theme.PhotoMap" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryVariant">@color/primaryDarkColor</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondary">@color/primaryColor</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:windowBackground">@color/activity_background</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="FloatingButtonPhoto" parent="Widget.Design.FloatingActionButton">
+        <item name="colorSecondary">@color/night_floating_button_secondary_color</item>
+        <item name="colorOnSecondary">@color/floating_button_ic_photo</item>
+        <item name="android:src">@drawable/ic_floating_button_photo</item>
+    </style>
+
+    <style name="FloatingButtonFollow" parent="Widget.Design.FloatingActionButton">
+        <item name="colorSecondary">@color/floating_button_enable</item>
+        <item name="colorOnSecondary">@color/night_floating_button_secondary_color</item>
+        <item name="android:src">@drawable/ic_floating_button_follow</item>
+    </style>
+
+    <style name="CustomText" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/white_text</item>
+        <item name="android:textSize">@dimen/main_text_size</item>
+    </style>
+
+    <style name="DialogCustomText" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/main_text_size</item>
+    </style>
+
+    <style name="InfoWindowCustomText" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/white_text</item>
+        <item name="android:textSize">@dimen/info_window_text_size</item>
+    </style>
+
+    <style name="PhotoCustomText" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/white_text</item>
+    </style>
+
+    <style name="LoginCustomText" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textColor">@color/activity_background</item>
+        <item name="android:textSize">@dimen/login_big_text</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="LoginCustomButton" parent="Widget.AppCompat.Button">
+        <item name="backgroundTint">@color/activity_background</item>
+        <item name="android:drawableStart">@drawable/ic_google</item>
+        <item name="android:text">@string/log_in_button</item>
+        <item name="android:textColor">@color/white_text</item>
+    </style>
+
 </resources>
