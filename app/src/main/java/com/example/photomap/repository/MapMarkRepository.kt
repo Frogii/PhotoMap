@@ -63,7 +63,7 @@ class MapMarkRepository(context: Context, private val database: MapMarkLocalData
             .await()
     }
 
-    suspend fun updateMapMark(mapMarkQuery: QuerySnapshot, newMapMarkMap: Map<String, Any>) {
+    suspend fun updateMapMarkInFirebase(mapMarkQuery: QuerySnapshot, newMapMarkMap: Map<String, Any>) {
         for (document in mapMarkQuery)
             FirebaseInstance.fireStoreDB.document(document.id).set(
                 newMapMarkMap,
@@ -71,7 +71,7 @@ class MapMarkRepository(context: Context, private val database: MapMarkLocalData
             ).await()
     }
 
-    suspend fun searchMarks(
+    suspend fun searchMarksInFirebase(
         category: String,
         filter: List<String>,
         query: String

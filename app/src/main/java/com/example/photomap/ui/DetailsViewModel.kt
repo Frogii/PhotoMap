@@ -23,7 +23,7 @@ class DetailsViewModel(private val mapMarkRepository: MapMarkRepository) : ViewM
             val mapMarkQuery = mapMarkRepository.getMarkFromFirebase(mapMark)
             if (mapMarkQuery.documents.isNotEmpty()) {
                 try {
-                    mapMarkRepository.updateMapMark(mapMarkQuery, mapOfMapMark)
+                    mapMarkRepository.updateMapMarkInFirebase(mapMarkQuery, mapOfMapMark)
                 } catch (e: Exception) {
                     Log.d("myLog", e.message.toString())
                 }

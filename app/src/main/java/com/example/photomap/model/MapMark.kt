@@ -9,7 +9,7 @@ import java.io.Serializable
 data class MapMark(
     @PrimaryKey()
     val name: String = "",
-    val url: String = "",
+    var url: String = "",
     val date: String = "9.01.2021",
     var description: String = "Best photo",
     var category: String = "Default",

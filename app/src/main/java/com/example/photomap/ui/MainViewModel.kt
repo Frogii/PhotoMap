@@ -1,6 +1,8 @@
 package com.example.photomap.ui
 
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,9 +16,8 @@ import com.example.photomap.util.Constants.MAP_MARK_FIELD_CATEGORY
 import com.example.photomap.util.Constants.NATURE_CATEGORY
 import com.example.photomap.util.Constants.NULL_CATEGORY
 import com.google.firebase.firestore.ktx.toObject
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.functions.Supplier
 import kotlinx.coroutines.launch
+import java.net.URL
 import java.util.*
 
 class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewModel() {
@@ -112,7 +113,7 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
             mapMarkList.clear()
             val querySnapshot =
                 categoryLiveDataList.value?.let {
-                    mapMarkRepository.searchMarks(
+                    mapMarkRepository.searchMarksInFirebase(
                         MAP_MARK_FIELD_CATEGORY,
                         it,
                         query
@@ -127,6 +128,38 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
             }
             this@MainViewModel.dataList.postValue(mapMarkList)
             Log.d("ViewModelLog", "search")
+        }
+    }
+
+    fun syncLocalDB(activity: MainActivity) {
+        var dataFromLocalDB: List<MapMark>
+        viewModelScope.launch {
+            dataFromLocalDB = mapMarkRepository.getAllMarksFromDB(categoryList)
+            Log.d("mainLog", dataFromLocalDB.toString())
+            if (dataFromLocalDB.isEmpty()) {
+                try {
+                    val querySnapshot = mapMarkRepository.getAllMarksFromFirebase(
+                        MAP_MARK_FIELD_CATEGORY,
+                        categoryList
+                    )
+                    for (document in querySnapshot.documents) {
+                        document.toObject<MapMark>()?.let {
+                            val url = URL(it.url)
+                            val bitmap =
+                                BitmapFactory.decodeStream(url.openConnection().getInputStream())
+                            val savedImageURI = MediaStore.Images.Media.insertImage(
+                                activity.contentResolver,
+                                bitmap,
+                                it.name,
+                                it.description
+                            )
+                            mapMarkRepository.addMarkToDB(it.also { it.url = savedImageURI })
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.d("mainLog", e.message.toString())
+                }
+            }
         }
     }
 

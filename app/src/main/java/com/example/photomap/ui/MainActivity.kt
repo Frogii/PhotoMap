@@ -1,10 +1,8 @@
 package com.example.photomap.ui
 
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -16,7 +14,6 @@ import com.example.photomap.R
 import com.example.photomap.repository.MapMarkRepository
 import com.example.photomap.util.AppConnectionUtils
 import com.example.photomap.util.AppPermissionUtils
-import com.example.photomap.util.Constants.PERMISSIONS_REQUEST
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -48,7 +45,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        AppPermissionUtils.requestAllPermissions(this)
+        if (AppConnectionUtils.checkConnection(this)){
+            if(AppPermissionUtils.checkWriteStoragePermission(this))
+                mainViewModel.syncLocalDB(this)
+        }
     }
 
     override fun onRestart() {
@@ -60,23 +60,6 @@ class MainActivity : AppCompatActivity() {
             Log.d("myLog", "from DB")
             if (AppPermissionUtils.checkReadStoragePermission(this@MainActivity))
                 mainViewModel.getMarksFromLocalDB()
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == PERMISSIONS_REQUEST) {
-            if (grantResults.contains(PackageManager.PERMISSION_DENIED)) {
-                Toast.makeText(
-                    this,
-                    getString(R.string.permissions_not_granted),
-                    Toast.LENGTH_SHORT
-                ).show()
-                this.finish()
-            }
         }
     }
 }

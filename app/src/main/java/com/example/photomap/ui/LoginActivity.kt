@@ -1,11 +1,14 @@
 package com.example.photomap.ui
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.photomap.R
+import com.example.photomap.util.AppPermissionUtils
+import com.example.photomap.util.Constants
 import com.example.photomap.util.Constants.REQUEST_CODE_SIGN_IN
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -28,6 +31,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         auth = FirebaseAuth.getInstance()
+
+        AppPermissionUtils.requestAllPermissions(this)
 
         buttonAuth.setOnClickListener {
             val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -66,6 +71,23 @@ class LoginActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@LoginActivity, e.message, Toast.LENGTH_LONG).show()
                 }
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == Constants.PERMISSIONS_REQUEST) {
+            if (grantResults.contains(PackageManager.PERMISSION_DENIED)) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.permissions_not_granted),
+                    Toast.LENGTH_SHORT
+                ).show()
+                this.finish()
             }
         }
     }
