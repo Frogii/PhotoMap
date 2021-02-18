@@ -7,25 +7,25 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
+import com.example.photomap.App
 import com.example.photomap.R
 import com.example.photomap.repository.MapMarkRepository
 import com.example.photomap.util.Constants.MAP_MARK_ITEM
+import javax.inject.Inject
 
 class DetailsActivity : AppCompatActivity() {
 
     lateinit var navController: NavController
+
+    @Inject
     lateinit var detailsViewModel: DetailsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.TransparentTheme)
+        App.daggerAppComponent.inject(this)
         setContentView(R.layout.activity_details)
 
-        val detailsViewModelProviderFactory =
-            DetailsViewModelProviderFactory(MapMarkRepository.invoke(this))
-        detailsViewModel = ViewModelProvider(
-            this, detailsViewModelProviderFactory
-        ).get(DetailsViewModel::class.java)
 
         val mapMark = intent.getSerializableExtra(MAP_MARK_ITEM)
         navController = Navigation.findNavController(this, R.id.detailsNavHostFragment)

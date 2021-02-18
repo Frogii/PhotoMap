@@ -12,22 +12,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 
-class MapMarkRepository(context: Context, private val database: MapMarkLocalDatabase) {
-
-    companion object {
-        @Volatile
-        private var instance: MapMarkRepository? = null
-        private val LOCK = Any()
-
-        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
-            instance ?: createRepository(context).also {
-                instance = it
-            }
-        }
-
-        private fun createRepository(context: Context) =
-            MapMarkRepository(context, MapMarkLocalDatabase.invoke(context))
-    }
+class MapMarkRepository(private val database: MapMarkLocalDatabase) {
 
     suspend fun addMarkToDB(mapMark: MapMark) {
         database.getMapMarkDao().addMapMark(mapMark)

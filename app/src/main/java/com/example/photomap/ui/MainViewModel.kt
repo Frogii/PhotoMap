@@ -16,6 +16,8 @@ import com.example.photomap.util.Constants.MAP_MARK_FIELD_CATEGORY
 import com.example.photomap.util.Constants.NATURE_CATEGORY
 import com.example.photomap.util.Constants.NULL_CATEGORY
 import com.google.firebase.firestore.ktx.toObject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.net.URL
 import java.util.*
@@ -133,7 +135,7 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
 
     fun syncLocalDB(activity: MainActivity) {
         var dataFromLocalDB: List<MapMark>
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             dataFromLocalDB = mapMarkRepository.getAllMarksFromDB(categoryList)
             Log.d("mainLog", dataFromLocalDB.toString())
             if (dataFromLocalDB.isEmpty()) {

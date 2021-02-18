@@ -15,18 +15,7 @@ abstract class MapMarkLocalDatabase : RoomDatabase() {
     abstract fun getMapMarkDao(): MapMarkDao
 
     companion object {
-
-        @Volatile
-        private var instance: MapMarkLocalDatabase? = null
-        private val LOCK = Any()
-
-        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
-            instance ?: createDatabase(context).also {
-                instance = it
-            }
-        }
-
-        private fun createDatabase(context: Context) =
+        fun createDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
                 MapMarkLocalDatabase::class.java, "MapMarkDB.db"
