@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.photomap.App
 import com.example.photomap.R
+import com.example.photomap.db.MapMarkLocalDatabase
 import com.example.photomap.repository.MapMarkRepository
 import com.example.photomap.util.AppConnectionUtils
 import com.example.photomap.util.AppPermissionUtils
@@ -21,16 +22,17 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var navController: NavController
-
     @Inject
+    lateinit var mainViewModelProviderFactory: MainViewModelProviderFactory
+    lateinit var navController: NavController
     lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.daggerAppComponent.inject(this)
         setContentView(R.layout.activity_main)
-
+        mainViewModel =
+            ViewModelProvider(this, mainViewModelProviderFactory).get(MainViewModel::class.java)
 
         navController = Navigation.findNavController(this, R.id.mainNavHostFragment)
         bottomNavView.setupWithNavController(mainNavHostFragment.findNavController())

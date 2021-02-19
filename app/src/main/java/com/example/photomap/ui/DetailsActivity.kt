@@ -15,9 +15,9 @@ import javax.inject.Inject
 
 class DetailsActivity : AppCompatActivity() {
 
-    lateinit var navController: NavController
-
     @Inject
+    lateinit var detailsViewModelProviderFactory: DetailsViewModelProviderFactory
+    lateinit var navController: NavController
     lateinit var detailsViewModel: DetailsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +26,10 @@ class DetailsActivity : AppCompatActivity() {
         App.daggerAppComponent.inject(this)
         setContentView(R.layout.activity_details)
 
-
+        detailsViewModel = ViewModelProvider(
+            this,
+            detailsViewModelProviderFactory
+        ).get(DetailsViewModel::class.java)
         val mapMark = intent.getSerializableExtra(MAP_MARK_ITEM)
         navController = Navigation.findNavController(this, R.id.detailsNavHostFragment)
         //WOW it works... sending data to fragment from activity by using navigation

@@ -12,7 +12,7 @@ class ContextModule(private val context: Context) {
     @Named("application_context")
     @ApplicationScope
     @Provides
-    fun context(): Context{
+    fun context(): Context {
         return this.context.applicationContext
     }
 }
