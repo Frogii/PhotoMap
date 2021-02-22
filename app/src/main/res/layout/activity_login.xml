@@ -4,28 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    android:background="@color/primaryColor"
+    tools:context=".ui.LoginActivity">
 
     <Button
         android:id="@+id/buttonAuth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:text="@string/log_in_button"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginStart="@dimen/login_start_margin_button"
+        android:layout_marginTop="@dimen/login_top_margin_button"
+        android:layout_marginEnd="@dimen/login_end_margin_button"
+        style="@style/LoginCustomButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewWelcome" />
 
-    <TextView
-        android:id="@+id/textViewWelcome"
+    <ImageView
+        android:id="@+id/imageViewLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="240dp"
-        android:text="@string/welcome_text"
-        android:textSize="30sp"
+        android:layout_marginBottom="@dimen/login_bottom_margin_image"
+        android:src="@drawable/ic_google"
+        app:layout_constraintBottom_toTopOf="@+id/buttonAuth"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewWelcome"
+        style="@style/LoginCustomText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/login_top_margin_text"
+        android:text="@string/welcome_text"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingBottom="16dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp">
 
     <TextView
         android:id="@+id/textViewDescription"
+        style="@style/CustomText"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:textSize="@dimen/main_text_size"
+        android:layout_marginStart="@dimen/timeline_item_start_margin_text"
+        android:layout_marginTop="@dimen/timeline_item_top_margin_text"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="I make this photo then I walk on street"
-        android:textColor="@color/black_text"
+        android:text="@string/default_photo_description"
         app:layout_constraintStart_toEndOf="@+id/imageViewMapPhoto"
         app:layout_constraintTop_toTopOf="@+id/imageViewMapPhoto" />
 
@@ -25,8 +23,8 @@
         android:id="@+id/textViewDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="28.01.2018"
+        android:layout_marginTop="@dimen/timeline_item_top_margin_text"
+        android:text="@string/default_photo_date"
         app:layout_constraintStart_toStartOf="@+id/textViewDescription"
         app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
 
@@ -34,8 +32,8 @@
         android:id="@+id/textViewCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Nature"
+        android:layout_marginTop="@dimen/timeline_item_top_margin_text"
+        android:text="@string/default_category"
         app:layout_constraintStart_toStartOf="@+id/textViewDate"
         app:layout_constraintTop_toBottomOf="@+id/textViewDate" />
 
@@ -43,8 +41,8 @@
         android:id="@+id/imageViewMapPhoto"
         android:layout_width="65dp"
         android:layout_height="65dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="@dimen/timeline_item_start_margin_photo"
+        android:layout_marginTop="@dimen/timeline_item_top_margin_photo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />

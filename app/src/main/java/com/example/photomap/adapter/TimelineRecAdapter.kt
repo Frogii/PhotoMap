@@ -1,6 +1,5 @@
 package com.example.photomap.adapter
 
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,17 +9,15 @@ import com.example.photomap.R
 import com.example.photomap.model.MapMark
 import com.example.photomap.util.AppDateUtils
 import kotlinx.android.synthetic.main.timeline_item.view.*
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
 
-class TimelineRecAdapter(private val clickableRecycler: ClickableRecycler) :
+class TimelineRecAdapter(private val clickableRecyclerItem: ClickableRecyclerItem) :
     RecyclerView.Adapter<TimelineRecAdapter.TimelineViewHolder>() {
 
     private var markList: List<MapMark> = ArrayList()
 
     fun setList(list: List<MapMark>) {
         this.markList = list
+        notifyDataSetChanged()
     }
 
     class TimelineViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -36,16 +33,16 @@ class TimelineRecAdapter(private val clickableRecycler: ClickableRecycler) :
         holder.itemView.apply {
             Glide
                 .with(this)
-                .load(markList[position].photoUrl)
+                .load(markList[position].url)
                 .circleCrop()
                 .into(imageViewMapPhoto)
 
             textViewDescription.text = markList[position].description
-            textViewDate.text = AppDateUtils.formatDate(markList[position].date, AppDateUtils.detailsDatePattern)
+            textViewDate.text = AppDateUtils.changeLongToShortPattern(markList[position].date)
             textViewCategory.text = markList[position].category
 
             this.setOnClickListener {
-                clickableRecycler.onItemClick()
+                clickableRecyclerItem.onItemClick(markList[position])
             }
         }
     }

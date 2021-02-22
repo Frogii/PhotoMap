@@ -1,11 +1,36 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="main_text_size">16sp</dimen>
-    <dimen name="category_padding_left">16sp</dimen>
-    <dimen name="category_margin_start">32sp</dimen>
-    <dimen name="category_margin_top">16sp</dimen>
-    <dimen name="category_margin_bottom">16sp</dimen>
+    <dimen name="category_left_padding">16sp</dimen>
+    <dimen name="category_start_margin">32sp</dimen>
+    <dimen name="category_top_margin">16sp</dimen>
+    <dimen name="category_bottom_margin">16sp</dimen>
+    <dimen name="login_big_text">46sp</dimen>
+    <dimen name="info_window_text_size">11sp</dimen>
+    <dimen name="photo_start_margin_text">24dp</dimen>
+    <dimen name="photo_end_margin_text">24dp</dimen>
+    <dimen name="photo_bottom_margin_text">8dp</dimen>
+    <dimen name="timeline_item_top_margin_text">4dp</dimen>
+    <dimen name="timeline_item_start_margin_text">16dp</dimen>
+    <dimen name="timeline_item_start_margin_photo">16dp</dimen>
+    <dimen name="timeline_item_top_margin_photo">16dp</dimen>
+    <dimen name="splash_bottom_margin_text">220dp</dimen>
+    <dimen name="splash_bottom_margin_image">32dp</dimen>
+    <dimen name="info_window_start_margin_text">8dp</dimen>
+    <dimen name="choose_photo_dialog_margin_start_text">24dp</dimen>
+    <dimen name="choose_photo_dialog_margin_top_text">32dp</dimen>
+    <dimen name="choose_photo_dialog_margin_bottom_text">24dp</dimen>
+    <dimen name="login_start_margin_button">32dp</dimen>
+    <dimen name="login_top_margin_button">150dp</dimen>
+    <dimen name="login_end_margin_button">32dp</dimen>
+    <dimen name="login_bottom_margin_image">16dp</dimen>
+    <dimen name="login_top_margin_text">240dp</dimen>
+    <dimen name="details_start_margin_text">16dp</dimen>
+    <dimen name="details_top_margin_text">32dp</dimen>
+    <dimen name="details_drawable_padding_text">20dp</dimen>
+    <dimen name="details_start_margin_edit_text">20dp</dimen>
+    <dimen name="map_end_margin_button">16dp</dimen>
+    <dimen name="map_bottom_margin_button">16dp</dimen>
 
 </resources>

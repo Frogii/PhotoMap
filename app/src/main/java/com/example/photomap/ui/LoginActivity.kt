@@ -1,10 +1,15 @@
 package com.example.photomap.ui
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.photomap.R
+import com.example.photomap.util.AppPermissionUtils
+import com.example.photomap.util.Constants
+import com.example.photomap.util.Constants.REQUEST_CODE_SIGN_IN
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -20,16 +25,14 @@ import kotlinx.coroutines.withContext
 
 class LoginActivity : AppCompatActivity() {
 
-    companion object{
-        const val REQUEST_CODE_SIGN_IN = 0
-    }
-
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         auth = FirebaseAuth.getInstance()
+
+        AppPermissionUtils.requestAllPermissions(this)
 
         buttonAuth.setOnClickListener {
             val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -46,9 +49,13 @@ class LoginActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SIGN_IN) {
-            val account = GoogleSignIn.getSignedInAccountFromIntent(data).result
-            account?.let {
-                googleAuthForFirebase(it)
+            try {
+                val account = GoogleSignIn.getSignedInAccountFromIntent(data).result
+                account?.let {
+                    googleAuthForFirebase(it)
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this, getString(R.string.login_error_message), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -64,6 +71,23 @@ class LoginActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@LoginActivity, e.message, Toast.LENGTH_LONG).show()
                 }
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == Constants.PERMISSIONS_REQUEST) {
+            if (grantResults.contains(PackageManager.PERMISSION_DENIED)) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.permissions_not_granted),
+                    Toast.LENGTH_SHORT
+                ).show()
+                this.finish()
             }
         }
     }
