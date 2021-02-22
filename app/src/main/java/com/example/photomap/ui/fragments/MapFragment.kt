@@ -240,7 +240,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             map.isMyLocationEnabled = true
             getMyLocation()
         }
-//        val myLatLng = LatLng(myLocation.latitude, myLocation.longitude)
         mainViewModel.followButtonLiveDataState.observe(viewLifecycleOwner, {
             followButtonState = it
             activity?.let { activity ->

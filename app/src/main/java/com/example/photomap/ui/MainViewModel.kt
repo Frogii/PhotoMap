@@ -38,7 +38,6 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
     val followButtonLiveDataState: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
-//        syncLocalDatabaseWithFirebase()
         followButtonLiveDataState.value = true
         categoryLiveDataList.value = categoryList
         checkBoxLiveDataStateMap.postValue(checkBoxStateMap)
@@ -133,6 +132,10 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
         }
     }
 
+    suspend fun gatDataFromLocalDB(): List<MapMark>{
+        return mapMarkRepository.getAllMarksFromDB(categoryList)
+    }
+
     fun syncLocalDB(activity: MainActivity) {
         var dataFromLocalDB: List<MapMark>
         CoroutineScope(Dispatchers.IO).launch {
@@ -164,31 +167,4 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
             }
         }
     }
-
-//    private fun syncLocalDatabaseWithFirebase() {
-//        val marksFromFirebase: MutableList<MapMark> = mutableListOf()
-//        val marksFromLocalDB: MutableList<MapMark> = mutableListOf()
-//        viewModelScope.launch {
-//            val firebaseObs = Observable.fromIterable(
-//                mapMarkRepository.getAllMarksFromFirebase(
-//                    MAP_MARK_FIELD_CATEGORY,
-//                    categoryList
-//                ).documents
-//            )
-//                .map {
-//                    it.toObject<MapMark>()
-//                }.map {
-//                    Log.d("ViewModelLog", "from FireBase $it")
-//                }.subscribe()
-//            val localObs = Observable.fromIterable(
-//                mapMarkRepository.getAllMarksFromDB(categoryList)
-//            ).map {
-//                Log.d("ViewModelLog", "from DB $it")
-//            }.subscribe()
-////            Observable.merge(firebaseObs, localObs).map {
-////
-////            }
-//
-//        }
-//    }
 }

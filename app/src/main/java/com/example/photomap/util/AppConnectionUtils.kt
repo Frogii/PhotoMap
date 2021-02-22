@@ -2,25 +2,41 @@ package com.example.photomap.util
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 
 
 class AppConnectionUtils {
 
     companion object {
-        fun checkConnection(context: Context): Boolean {
-            val connMgr =
+
+        fun isNetworkEnable(context: Context): Boolean {
+            var result = false
+            val connectivityManager =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            if (connMgr != null) {
-                val activeNetworkInfo = connMgr.activeNetworkInfo
-                if (activeNetworkInfo != null) { // connected to the internet
-                    // connected to the mobile provider's data plan
-                    return if (activeNetworkInfo.type == ConnectivityManager.TYPE_WIFI) {
-                        // connected to wifi
-                        true
-                    } else activeNetworkInfo.type == ConnectivityManager.TYPE_MOBILE
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val networkCapabilities = connectivityManager.activeNetwork ?: return false
+                val actNw =
+                    connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+                result = when {
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                    else -> false
+                }
+            } else {
+                connectivityManager.run {
+                    connectivityManager.activeNetworkInfo?.run {
+                        result = when (type) {
+                            ConnectivityManager.TYPE_WIFI -> true
+                            ConnectivityManager.TYPE_MOBILE -> true
+                            ConnectivityManager.TYPE_ETHERNET -> true
+                            else -> false
+                        }
+                    }
                 }
             }
-            return false
+            return result
         }
     }
 }

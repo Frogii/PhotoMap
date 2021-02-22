@@ -27,8 +27,7 @@ class DetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_details)
 
         detailsViewModel = ViewModelProvider(
-            this,
-            detailsViewModelProviderFactory
+            this, detailsViewModelProviderFactory
         ).get(DetailsViewModel::class.java)
         val mapMark = intent.getSerializableExtra(MAP_MARK_ITEM)
         navController = Navigation.findNavController(this, R.id.detailsNavHostFragment)
@@ -37,6 +36,5 @@ class DetailsActivity : AppCompatActivity() {
             R.navigation.details_nav_graph,
             Bundle().also { it.putSerializable(MAP_MARK_ITEM, mapMark) })
         NavigationUI.setupActionBarWithNavController(this, navController)
-        Log.d("myLog", mapMark.toString())
     }
 }

@@ -50,7 +50,7 @@ class TimeLineFragment : Fragment(), ClickableRecyclerItem {
         }
         )
 
-        if (AppConnectionUtils.checkConnection(activity as MainActivity)) {
+        if (AppConnectionUtils.isNetworkEnable(activity as MainActivity)) {
             Log.d("myLog", "from NET")
             mainViewModel.getAllMarksFromFirebase()
         } else {

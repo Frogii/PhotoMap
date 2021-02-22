@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        if (AppConnectionUtils.checkConnection(this)) {
+        if (AppConnectionUtils.isNetworkEnable(this)) {
             if (AppPermissionUtils.checkWriteStoragePermission(this))
                 mainViewModel.syncLocalDB(this)
         }
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        if (AppConnectionUtils.checkConnection(this)) {
+        if (AppConnectionUtils.isNetworkEnable(this)) {
             mainViewModel.getAllMarksFromFirebase()
             Log.d("myLog", "from NET")
         } else {
