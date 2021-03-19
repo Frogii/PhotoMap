@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         if (AppConnectionUtils.isNetworkEnable(this)) {
             if (AppPermissionUtils.checkWriteStoragePermission(this))
-                mainViewModel.syncLocalDB(this)
+                mainViewModel.syncLocalDB()
         }
     }
 

@@ -15,6 +15,7 @@ import com.example.photomap.util.Constants.FRIENDS_CATEGORY
 import com.example.photomap.util.Constants.MAP_MARK_FIELD_CATEGORY
 import com.example.photomap.util.Constants.NATURE_CATEGORY
 import com.example.photomap.util.Constants.NULL_CATEGORY
+import com.example.photomap.util.ResProvider
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,7 @@ import kotlinx.coroutines.launch
 import java.net.URL
 import java.util.*
 
-class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewModel() {
+class MainViewModel(private val mapMarkRepository: MapMarkRepository, private val resourcesProvider: ResProvider) : ViewModel() {
 
     private val mapMarkList = mutableListOf<MapMark>()
     val dataList: MutableLiveData<List<MapMark>> = MutableLiveData()
@@ -136,7 +137,7 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
         return mapMarkRepository.getAllMarksFromDB(categoryList)
     }
 
-    fun syncLocalDB(activity: MainActivity) {
+    fun syncLocalDB() {
         var dataFromLocalDB: List<MapMark>
         CoroutineScope(Dispatchers.IO).launch {
             dataFromLocalDB = mapMarkRepository.getAllMarksFromDB(categoryList)
@@ -153,7 +154,7 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository) : ViewMode
                             val bitmap =
                                 BitmapFactory.decodeStream(url.openConnection().getInputStream())
                             val savedImageURI = MediaStore.Images.Media.insertImage(
-                                activity.contentResolver,
+                                resourcesProvider.getContentResolver(),
                                 bitmap,
                                 it.name,
                                 it.description
