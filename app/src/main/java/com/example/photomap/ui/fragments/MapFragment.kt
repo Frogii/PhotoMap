@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 
-class MapFragment : Fragment(), OnMapReadyCallback {
+class MapFragment : AbstractMapFragment(), OnMapReadyCallback {
 
     private var mapViewBundle: Bundle? = null
     private lateinit var map: GoogleMap
@@ -69,13 +69,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(it)
         }
         auth = FirebaseAuth.getInstance()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_map, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -198,41 +191,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        mapView?.onSaveInstanceState(outState)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mapView.onResume()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mapView.onStart()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mapView.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mapView.onStop()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        mapView.onLowMemory()
-    }
-
-    companion object {
-        private const val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
-    }
-
 
     override fun onMapReady(p0: GoogleMap) {
         val zoomLevel = 12f

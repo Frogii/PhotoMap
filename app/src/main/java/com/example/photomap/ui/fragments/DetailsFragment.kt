@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.photomap.R
@@ -46,11 +47,15 @@ class DetailsFragment : Fragment() {
         Log.d("myLog", mapMark.toString())
 
         imageViewDetailsPhoto.setOnClickListener {
+            val extras = FragmentNavigatorExtras(
+                imageViewDetailsPhoto to "photo",
+                textViewDetailsDate to "date",
+                editTextTextDetailsDescription to "description")
             findNavController().navigate(
                 R.id.action_detailsFragment_to_photoFragment,
                 Bundle().also {
                     it.putSerializable(MAP_MARK_ITEM, mapMark)
-                })
+                },null, extras)
         }
 
         Glide
