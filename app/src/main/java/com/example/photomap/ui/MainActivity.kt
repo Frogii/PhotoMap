@@ -16,6 +16,7 @@ import com.example.photomap.db.MapMarkLocalDatabase
 import com.example.photomap.repository.MapMarkRepository
 import com.example.photomap.util.AppConnectionUtils
 import com.example.photomap.util.AppPermissionUtils
+import com.example.photomap.util.injectViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -31,8 +32,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         App.daggerAppComponent.inject(this)
         setContentView(R.layout.activity_main)
-        mainViewModel =
-            ViewModelProvider(this, mainViewModelProviderFactory).get(MainViewModel::class.java)
+//        mainViewModel =
+//            ViewModelProvider(this, mainViewModelProviderFactory).get(MainViewModel::class.java)
+        mainViewModel = injectViewModel(mainViewModelProviderFactory)
 
         navController = Navigation.findNavController(this, R.id.mainNavHostFragment)
         bottomNavView.setupWithNavController(mainNavHostFragment.findNavController())

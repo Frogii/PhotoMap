@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.example.photomap.R
 import com.example.photomap.model.MapMark
@@ -240,7 +241,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             map.isMyLocationEnabled = true
             getMyLocation()
         }
-        mainViewModel.followButtonLiveDataState.observe(viewLifecycleOwner, {
+        mainViewModel.followButtonLiveDataState.observe(viewLifecycleOwner) {
             followButtonState = it
             activity?.let { activity ->
                 if (followButtonState) {
@@ -282,15 +283,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         )
                 }
             }
-        })
+        }
         map.uiSettings.isMyLocationButtonEnabled = false
-        mainViewModel.dataList.observe(viewLifecycleOwner, { it ->
+        mainViewModel.dataList.observe(viewLifecycleOwner) { it ->
             listOfMapMarks = it
             for (mapMark in listOfMapMarks) {
                 map.addMarker(AppMapUtils.setMarkerOptions(mapMark, this.requireContext()))
                 mapOfMapMarks[mapMark.name] = mapMark
             }
-        })
+        }
 
         map.setInfoWindowAdapter(this.activity?.let {
             AppMapUtils.CustomMapInfoWindowAdapter(
