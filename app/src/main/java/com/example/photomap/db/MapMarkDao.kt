@@ -1,9 +1,6 @@
 package com.example.photomap.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.photomap.model.MapMark
 
 @Dao
@@ -14,4 +11,7 @@ interface MapMarkDao {
 
     @Query("SELECT*FROM map_mark_items WHERE category IN (:filter)")
     suspend fun getAllMapMarks(filter: MutableList<String>): List<MapMark>
+
+    @Delete
+    suspend fun deleteMapMark(mapMark: MapMark)
 }

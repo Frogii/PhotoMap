@@ -23,7 +23,10 @@ import kotlinx.coroutines.launch
 import java.net.URL
 import java.util.*
 
-class MainViewModel(private val mapMarkRepository: MapMarkRepository, private val resourcesProvider: ResProvider) : ViewModel() {
+class MainViewModel(
+    private val mapMarkRepository: MapMarkRepository,
+    private val resourcesProvider: ResProvider
+) : ViewModel() {
 
     private val mapMarkList = mutableListOf<MapMark>()
     val dataList: MutableLiveData<List<MapMark>> = MutableLiveData()
@@ -46,33 +49,25 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository, private va
 
     fun uploadMapMark(imageFile: Uri, imageName: String, imgLat: Double, imgLng: Double) {
         viewModelScope.launch {
-            val markForDB = MapMark(
-                name = imageName,
-                url = imageFile.toString(),
-                date = AppDateUtils.formatDate(
-                    Date(), AppDateUtils.longPhotoDatePattern
-                ),
-                imageLatitude = imgLat,
-                imageLongitude = imgLng
-            )
-            mapMarkRepository.addMarkToDB(markForDB)
             try {
-                imageName.let {
-                    mapMarkRepository.uploadPhotoToFireStorage(imageFile, imageName)
-                    val imageUrl = mapMarkRepository.getImageUrlFromFireStorage(imageName)
-                    val mark = MapMark(
-                        name = imageName, url = imageUrl, date = AppDateUtils.formatDate(
-                            Date(), AppDateUtils.longPhotoDatePattern
-                        ), imageLatitude = imgLat, imageLongitude = imgLng
-                    )
-                    mapMarkRepository.uploadMarkToFirebase(mark)
-                    mapMarkList.add(mark)
-                    dataList.postValue(mapMarkList)
-                    Log.d("ViewModelLog", "image uploaded")
-                }
+                mapMarkList.add(mapMarkRepository.uploadMark(imageFile, imageName, imgLat, imgLng))
+                dataList.postValue(mapMarkList)
+                Log.d("ViewModelLog", "image uploaded")
             } catch (e: Exception) {
                 Log.d("ViewModelLog", e.message.toString())
             }
+        }
+    }
+
+    fun deleteMapMark(mapMark: MapMark) {
+        viewModelScope.launch {
+            try {
+                mapMarkRepository.deleteMark(mapMark)
+            } catch (e: Exception) {
+                Log.d("ViewModelLog", e.message.toString())
+            }
+            mapMarkList.remove(mapMark)
+            dataList.postValue(mapMarkList)
         }
     }
 
@@ -133,7 +128,7 @@ class MainViewModel(private val mapMarkRepository: MapMarkRepository, private va
         }
     }
 
-    suspend fun gatDataFromLocalDB(): List<MapMark>{
+    suspend fun gatDataFromLocalDB(): List<MapMark> {
         return mapMarkRepository.getAllMarksFromDB(categoryList)
     }
 

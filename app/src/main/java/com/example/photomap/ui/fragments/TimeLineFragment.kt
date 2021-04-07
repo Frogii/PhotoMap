@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.*
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.photomap.R
@@ -45,10 +46,9 @@ class TimeLineFragment : Fragment(), ClickableRecyclerItem {
 
         setupRecycler()
         mainViewModel = (activity as MainActivity).mainViewModel
-        mainViewModel.dataList.observe(viewLifecycleOwner, {
+        mainViewModel.dataList.observe(viewLifecycleOwner) {
             timelineAdapter.setList(it)
         }
-        )
 
         if (AppConnectionUtils.isNetworkEnable(activity as MainActivity)) {
             Log.d("myLog", "from NET")
@@ -105,5 +105,9 @@ class TimeLineFragment : Fragment(), ClickableRecyclerItem {
         startActivity(Intent(this.context, DetailsActivity::class.java).also {
             it.putExtra(MAP_MARK_ITEM, item)
         })
+    }
+
+    override fun onDeleteClick(mark: MapMark) {
+        mainViewModel.deleteMapMark(mark)
     }
 }

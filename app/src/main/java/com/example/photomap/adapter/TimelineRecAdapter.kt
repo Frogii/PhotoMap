@@ -44,6 +44,10 @@ class TimelineRecAdapter(private val clickableRecyclerItem: ClickableRecyclerIte
             this.setOnClickListener {
                 clickableRecyclerItem.onItemClick(markList[position])
             }
+
+            imageViewDelete.setOnClickListener {
+                clickableRecyclerItem.onDeleteClick(markList[position])
+            }
         }
     }
 
