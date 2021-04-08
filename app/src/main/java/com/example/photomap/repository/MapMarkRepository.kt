@@ -22,7 +22,6 @@ class MapMarkRepository(private val database: MapMarkLocalDatabase) {
             val snapshotList = it.documents
             for (document in snapshotList){
                 FirebaseInstance.fireStoreDB.document(document.id).delete()
-                Log.d("ViewModelLog", document.toString())
             }
         }
         FirebaseInstance.fireBaseImageStorage.child("$STORAGE_PATH${mapMark.name}").delete()

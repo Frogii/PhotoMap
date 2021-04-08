@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.example.photomap.R
 import com.example.photomap.adapter.CategoriesRecAdapter
@@ -37,13 +38,13 @@ class CategoriesFragment : Fragment(), CategoryClickListener {
         super.onViewCreated(view, savedInstanceState)
         setupRecycler()
 
-        mainViewModel.categoryLiveDataList.observe(viewLifecycleOwner, {
+        mainViewModel.categoryLiveDataList.observe(viewLifecycleOwner) {
             categoryList = it
-        })
-        mainViewModel.checkBoxLiveDataStateMap.observe(viewLifecycleOwner, {
+        }
+        mainViewModel.checkBoxLiveDataStateMap.observe(viewLifecycleOwner) {
             checkBoxStateMap = it
             categoriesRecAdapter.setCheckBoxStateMap(checkBoxStateMap)
-        })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

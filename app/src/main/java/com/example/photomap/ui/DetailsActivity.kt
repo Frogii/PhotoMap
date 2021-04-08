@@ -1,6 +1,8 @@
 package com.example.photomap.ui
 
 import android.os.Bundle
+import android.transition.Fade
+import android.transition.TransitionInflater
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +28,12 @@ class DetailsActivity : AppCompatActivity() {
         setTheme(R.style.TransparentTheme)
         App.daggerAppComponent.inject(this)
         setContentView(R.layout.activity_details)
+        window.sharedElementReturnTransition = TransitionInflater.from(this).inflateTransition(R.transition.change_bounds)
+        val fade = Fade()
+        fade.excludeTarget(android.R.id.statusBarBackground, true)
+        fade.excludeTarget(android.R.id.navigationBarBackground, true)
+        window.enterTransition = fade
+        window.exitTransition = fade
 
 //        detailsViewModel = ViewModelProvider(
 //            this, detailsViewModelProviderFactory

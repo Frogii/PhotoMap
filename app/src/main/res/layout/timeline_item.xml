@@ -39,6 +39,7 @@
 
     <ImageView
         android:id="@+id/imageViewMapPhoto"
+        android:transitionName="photo"
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:layout_marginStart="@dimen/timeline_item_start_margin_photo"

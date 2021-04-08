@@ -4,7 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.ImageView
 import android.widget.SearchView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
@@ -21,6 +23,7 @@ import com.example.photomap.util.AppPermissionUtils
 import com.example.photomap.util.Constants.MAP_MARK_ITEM
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.fragment_time_line.*
+import kotlinx.android.synthetic.main.timeline_item.*
 import java.util.*
 
 
@@ -101,10 +104,11 @@ class TimeLineFragment : Fragment(), ClickableRecyclerItem {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onItemClick(item: MapMark) {
+    override fun onItemClick(item: MapMark, view: ImageView) {
+        val options = activity?.let { ActivityOptionsCompat.makeSceneTransitionAnimation(it, view, "photo" ) }
         startActivity(Intent(this.context, DetailsActivity::class.java).also {
             it.putExtra(MAP_MARK_ITEM, item)
-        })
+        }, options?.toBundle())
     }
 
     override fun onDeleteClick(mark: MapMark) {

@@ -1,6 +1,7 @@
 package com.example.photomap.ui.fragments
 
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.*
 import android.widget.Toast
@@ -114,7 +115,10 @@ class DetailsFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-            android.R.id.home -> activity?.finish()
+            android.R.id.home -> {
+                activity?.supportFinishAfterTransition()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
