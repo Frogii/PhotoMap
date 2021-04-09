@@ -32,8 +32,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         App.daggerAppComponent.inject(this)
         setContentView(R.layout.activity_main)
-//        mainViewModel =
-//            ViewModelProvider(this, mainViewModelProviderFactory).get(MainViewModel::class.java)
         mainViewModel = injectViewModel(mainViewModelProviderFactory)
 
         navController = Navigation.findNavController(this, R.id.mainNavHostFragment)
@@ -60,9 +58,7 @@ class MainActivity : AppCompatActivity() {
         super.onRestart()
         if (AppConnectionUtils.isNetworkEnable(this)) {
             mainViewModel.getAllMarksFromFirebase()
-            Log.d("myLog", "from NET")
         } else {
-            Log.d("myLog", "from DB")
             if (AppPermissionUtils.checkReadStoragePermission(this@MainActivity))
                 mainViewModel.getMarksFromLocalDB()
         }

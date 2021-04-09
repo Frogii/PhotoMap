@@ -12,7 +12,6 @@ import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.example.photomap.R
@@ -21,8 +20,8 @@ import com.example.photomap.ui.DetailsActivity
 import com.example.photomap.ui.LoginActivity
 import com.example.photomap.ui.MainActivity
 import com.example.photomap.ui.MainViewModel
-import com.example.photomap.ui.dialog.ChoosePhotoDialog
-import com.example.photomap.ui.dialog.DialogClickListener
+import com.example.photomap.ui.dialog.ChooseImageSourceDialog
+import com.example.photomap.ui.dialog.CreatePhotoClickListener
 import com.example.photomap.util.AppCameraUtils
 import com.example.photomap.util.AppMapUtils
 import com.example.photomap.util.AppPermissionUtils
@@ -47,7 +46,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 
-class MapFragment : AbstractMapFragment(), OnMapReadyCallback {
+class MapFragment : AbstractMapFragment(), OnMapReadyCallback, CreatePhotoClickListener {
 
     private var mapViewBundle: Bundle? = null
     private lateinit var map: GoogleMap
@@ -81,39 +80,9 @@ class MapFragment : AbstractMapFragment(), OnMapReadyCallback {
         mapView.getMapAsync(this)
 
         floatingButtonPhoto.setOnClickListener {
-            ChoosePhotoDialog(activity as MainActivity, object : DialogClickListener {
-                override fun chooseImage() {
-                    Intent(
-                        Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                    )
-                        .also {
-                            startActivityForResult(it, MY_LOCATION_REQUEST_CODE_IMAGE_PICK)
-                        }
-                }
-
-                override fun takePhoto() {
-                    photoFile = activity?.let { activity ->
-                        AppCameraUtils.getPhotoFile(
-                            AppCameraUtils.createPhotoName(activity),
-                            activity
-                        )
-                    }
-                    val fileProvider = photoFile?.let { file ->
-                        activity?.let { activity ->
-                            FileProvider.getUriForFile(
-                                activity,
-                                FILE_PROVIDER_PATH,
-                                file
-                            )
-                        }
-                    }
-                    Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {
-                        it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
-                        startActivityForResult(it, MY_LOCATION_REQUEST_CODE_TAKE_PHOTO)
-                    }
-                }
-            }).show()
+            val dialog = ChooseImageSourceDialog(
+                this, MY_LOCATION_REQUEST_CODE_TAKE_PHOTO, MY_LOCATION_REQUEST_CODE_IMAGE_PICK)
+            dialog.show(childFragmentManager, "myLocationDialog")
         }
     }
 
@@ -121,6 +90,7 @@ class MapFragment : AbstractMapFragment(), OnMapReadyCallback {
         super.onActivityResult(requestCode, resultCode, data)
         //taking photo from camera
         if (requestCode == MY_LOCATION_REQUEST_CODE_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+            Log.d("myLog", data?.getParcelableExtra<Uri>("uri").toString())
             photoUri = Uri.fromFile(photoFile)
             photoFile?.name?.let {
                 mainViewModel.uploadMapMark(
@@ -130,6 +100,7 @@ class MapFragment : AbstractMapFragment(), OnMapReadyCallback {
                 )
             }
         } else if (requestCode == LONG_CLICK_REQUEST_CODE_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+            Log.d("myLog", "long press taking from camera")
             photoUri = Uri.fromFile(photoFile)
             photoFile?.name?.let {
                 mainViewModel.uploadMapMark(
@@ -260,41 +231,9 @@ class MapFragment : AbstractMapFragment(), OnMapReadyCallback {
         map.setOnMapLongClickListener { latLng ->
             longClickPhotoLatLng = LatLng(latLng.latitude, latLng.longitude)
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(longClickPhotoLatLng, zoomLevel))
-            ChoosePhotoDialog(activity as MainActivity, object : DialogClickListener {
-                override fun chooseImage() {
-                    Intent(
-                        Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                    )
-                        .also {
-                            startActivityForResult(it, LONG_CLICK_REQUEST_CODE_IMAGE_PICK)
-                        }
-                }
-
-                override fun takePhoto() {
-                    photoFile = this@MapFragment.activity?.let { activity ->
-                        AppCameraUtils.getPhotoFile(
-                            AppCameraUtils.createPhotoName(activity),
-                            activity
-                        )
-                    }
-                    val fileProvider = photoFile?.let { file ->
-                        this@MapFragment.activity?.let { activity ->
-                            FileProvider.getUriForFile(
-                                activity,
-                                FILE_PROVIDER_PATH,
-                                file
-                            )
-                        }
-                    }
-                    Intent(
-                        Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    ).also {
-                        it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
-                        startActivityForResult(it, LONG_CLICK_REQUEST_CODE_TAKE_PHOTO)
-                    }
-                }
-            }).show()
+            ChooseImageSourceDialog(
+                this, LONG_CLICK_REQUEST_CODE_TAKE_PHOTO, LONG_CLICK_REQUEST_CODE_IMAGE_PICK)
+                .show(childFragmentManager, "longPressDialog")
             mainViewModel.getAllMarksFromFirebase()
         }
 
@@ -340,6 +279,24 @@ class MapFragment : AbstractMapFragment(), OnMapReadyCallback {
                         Toast.makeText(activity, "Enable My Location!", Toast.LENGTH_LONG).show()
                     }
                 }
+        }
+    }
+
+    override fun createPhotoFile(requestCode: Int) {
+        photoFile = AppCameraUtils.getPhotoFile(
+            AppCameraUtils.createPhotoName(requireActivity()),
+            requireActivity()
+        )
+        val fileProvider = photoFile?.let { file ->
+            FileProvider.getUriForFile(
+                requireActivity(),
+                FILE_PROVIDER_PATH,
+                file
+            )
+        }
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {
+            it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
+            startActivityForResult(it, requestCode)
         }
     }
 }

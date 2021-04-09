@@ -17,13 +17,14 @@ class ChangeCategoryDialog(var changeCategoryClickListener: ChangeCategoryClickL
         val categoryArray = arrayOf(FRIENDS_CATEGORY, NATURE_CATEGORY, DEFAULT_CATEGORY)
         return AlertDialog.Builder(context)
             .setTitle(getString(R.string.dialog_change_category_title))
-            .setSingleChoiceItems(categoryArray, -1, DialogInterface.OnClickListener { dialogInterface, i ->
+            .setSingleChoiceItems(categoryArray, -1) { dialogInterface, i ->
                 changeCategoryClickListener.changeCategory(categoryArray[i])
                 dialogInterface.dismiss()
-            })
-            .setNegativeButton(getString(R.string.dialog_change_category_cancel), DialogInterface.OnClickListener { dialogInterface, _ ->
+            }
+            .setNegativeButton(getString(R.string.dialog_change_category_cancel)
+            ) { dialogInterface, _ ->
                 dialogInterface.dismiss()
-            })
+            }
             .create()
     }
 }

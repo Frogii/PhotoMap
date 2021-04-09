@@ -29,15 +29,7 @@ class DetailsActivity : AppCompatActivity() {
         App.daggerAppComponent.inject(this)
         setContentView(R.layout.activity_details)
         window.sharedElementReturnTransition = TransitionInflater.from(this).inflateTransition(R.transition.change_bounds)
-        val fade = Fade()
-        fade.excludeTarget(android.R.id.statusBarBackground, true)
-        fade.excludeTarget(android.R.id.navigationBarBackground, true)
-        window.enterTransition = fade
-        window.exitTransition = fade
 
-//        detailsViewModel = ViewModelProvider(
-//            this, detailsViewModelProviderFactory
-//        ).get(DetailsViewModel::class.java)
         detailsViewModel = injectViewModel(detailsViewModelProviderFactory)
         val mapMark = intent.getSerializableExtra(MAP_MARK_ITEM)
         navController = Navigation.findNavController(this, R.id.detailsNavHostFragment)
