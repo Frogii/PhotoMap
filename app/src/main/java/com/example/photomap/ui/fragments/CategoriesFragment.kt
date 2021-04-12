@@ -1,7 +1,6 @@
 package com.example.photomap.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
@@ -24,7 +23,6 @@ class CategoriesFragment : Fragment(), CategoryClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        mainViewModel = (activity as MainActivity).mainViewModel
     }
 
     override fun onCreateView(
@@ -37,7 +35,7 @@ class CategoriesFragment : Fragment(), CategoryClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecycler()
-
+        mainViewModel = (activity as MainActivity).mainViewModel
         mainViewModel.categoryLiveDataList.observe(viewLifecycleOwner) {
             categoryList = it
         }

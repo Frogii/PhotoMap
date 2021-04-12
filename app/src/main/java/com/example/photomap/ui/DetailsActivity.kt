@@ -1,17 +1,13 @@
 package com.example.photomap.ui
 
 import android.os.Bundle
-import android.transition.Fade
 import android.transition.TransitionInflater
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.example.photomap.App
 import com.example.photomap.R
-import com.example.photomap.repository.MapMarkRepository
 import com.example.photomap.util.Constants.MAP_MARK_ITEM
 import com.example.photomap.util.injectViewModel
 import javax.inject.Inject

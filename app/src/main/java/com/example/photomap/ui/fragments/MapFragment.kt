@@ -80,9 +80,10 @@ class MapFragment : AbstractMapFragment(), OnMapReadyCallback, CreatePhotoClickL
         mapView.getMapAsync(this)
 
         floatingButtonPhoto.setOnClickListener {
-            val dialog = ChooseImageSourceDialog(
-                this, MY_LOCATION_REQUEST_CODE_TAKE_PHOTO, MY_LOCATION_REQUEST_CODE_IMAGE_PICK)
-            dialog.show(childFragmentManager, "myLocationDialog")
+            ChooseImageSourceDialog.getInstance(
+                MY_LOCATION_REQUEST_CODE_TAKE_PHOTO,
+                MY_LOCATION_REQUEST_CODE_IMAGE_PICK
+            ).show(childFragmentManager, MY_LOCATION_DIALOG)
         }
     }
 
@@ -172,45 +173,43 @@ class MapFragment : AbstractMapFragment(), OnMapReadyCallback, CreatePhotoClickL
         }
         mainViewModel.followButtonLiveDataState.observe(viewLifecycleOwner) {
             followButtonState = it
-            activity?.let { activity ->
-                if (followButtonState) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        while (followButtonState) {
-                            fusedLocationClient.lastLocation
-                                .addOnSuccessListener { location: Location? ->
-                                    location?.let {
-                                        myLocation = location
-                                        map.animateCamera(
-                                            CameraUpdateFactory.newLatLngZoom(
-                                                LatLng(
-                                                    location.latitude,
-                                                    location.longitude
-                                                ), zoomLevel
-                                            )
+            if (followButtonState) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    while (followButtonState) {
+                        fusedLocationClient.lastLocation
+                            .addOnSuccessListener { location: Location? ->
+                                location?.let {
+                                    myLocation = location
+                                    map.animateCamera(
+                                        CameraUpdateFactory.newLatLngZoom(
+                                            LatLng(
+                                                location.latitude,
+                                                location.longitude
+                                            ), zoomLevel
                                         )
-                                    }
+                                    )
                                 }
-                            delay(5000)
-                        }
+                            }
+                        delay(5000)
                     }
-                    AppMapUtils.changeMapUiState(map, followButtonState)
-                    floatingButtonFollow.backgroundTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                activity,
-                                R.color.floating_button_enable
-                            )
-                        )
-                } else {
-                    AppMapUtils.changeMapUiState(map, followButtonState)
-                    floatingButtonFollow.backgroundTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                activity,
-                                R.color.floating_button_disable
-                            )
-                        )
                 }
+                AppMapUtils.changeMapUiState(map, followButtonState)
+                floatingButtonFollow.backgroundTintList =
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.floating_button_enable
+                        )
+                    )
+            } else {
+                AppMapUtils.changeMapUiState(map, followButtonState)
+                floatingButtonFollow.backgroundTintList =
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.floating_button_disable
+                        )
+                    )
             }
         }
         map.uiSettings.isMyLocationButtonEnabled = false
@@ -231,9 +230,10 @@ class MapFragment : AbstractMapFragment(), OnMapReadyCallback, CreatePhotoClickL
         map.setOnMapLongClickListener { latLng ->
             longClickPhotoLatLng = LatLng(latLng.latitude, latLng.longitude)
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(longClickPhotoLatLng, zoomLevel))
-            ChooseImageSourceDialog(
-                this, LONG_CLICK_REQUEST_CODE_TAKE_PHOTO, LONG_CLICK_REQUEST_CODE_IMAGE_PICK)
-                .show(childFragmentManager, "longPressDialog")
+            ChooseImageSourceDialog.getInstance(
+                LONG_CLICK_REQUEST_CODE_TAKE_PHOTO, LONG_CLICK_REQUEST_CODE_IMAGE_PICK
+            )
+                .show(childFragmentManager, LONG_PRESS_DIALOG)
             mainViewModel.getAllMarksFromFirebase()
         }
 
@@ -298,5 +298,10 @@ class MapFragment : AbstractMapFragment(), OnMapReadyCallback, CreatePhotoClickL
             it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
             startActivityForResult(it, requestCode)
         }
+    }
+
+    companion object{
+        const val MY_LOCATION_DIALOG = "myLocationDialog"
+        const val LONG_PRESS_DIALOG = "longPressDialog"
     }
 }

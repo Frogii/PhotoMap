@@ -1,7 +1,6 @@
 package com.example.photomap.ui.fragments
 
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.util.Log
 import android.view.*
 import android.widget.Toast
@@ -22,7 +21,7 @@ import com.example.photomap.util.Constants.MAP_MARK_ITEM
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
-class DetailsFragment : Fragment() {
+class DetailsFragment : Fragment(), ChangeCategoryClickListener {
 
     private lateinit var detailsViewModel: DetailsViewModel
     private lateinit var mapMark: MapMark
@@ -49,14 +48,16 @@ class DetailsFragment : Fragment() {
 
         imageViewDetailsPhoto.setOnClickListener {
             val extras = FragmentNavigatorExtras(
-                imageViewDetailsPhoto to "photo",
-                textViewDetailsDate to "date",
-                editTextTextDetailsDescription to "description")
+                imageViewDetailsPhoto to PHOTO,
+                textViewDetailsDate to DATE,
+                editTextDetailsDescription to DESCRIPTION
+            )
             findNavController().navigate(
                 R.id.action_detailsFragment_to_photoFragment,
                 Bundle().also {
                     it.putSerializable(MAP_MARK_ITEM, mapMark)
-                },null, extras)
+                }, null, extras
+            )
         }
 
         Glide
@@ -65,20 +66,10 @@ class DetailsFragment : Fragment() {
             .into(imageViewDetailsPhoto)
 
         textViewDetailsCategory.text = mapMark.category
-        editTextTextDetailsDescription.setText(mapMark.description)
+        editTextDetailsDescription.setText(mapMark.description)
         textViewDetailsDate.text = mapMark.date
         textViewDetailsCategory.setOnClickListener {
-            val changeCategoryDialog = ChangeCategoryDialog(object : ChangeCategoryClickListener {
-                override fun changeCategory(category: String) {
-                    textViewDetailsCategory.text = category
-                }
-            })
-            this.activity?.let { activity ->
-                changeCategoryDialog.show(
-                    activity.supportFragmentManager,
-                    CATEGORY_DIALOG_TAG
-                )
-            }
+            ChangeCategoryDialog.getInstance().show(childFragmentManager, CATEGORY_DIALOG_TAG)
         }
     }
 
@@ -98,10 +89,10 @@ class DetailsFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_done_details -> {
-                if (mapMark.description != editTextTextDetailsDescription.text.toString() ||
+                if (mapMark.description != editTextDetailsDescription.text.toString() ||
                     mapMark.category != textViewDetailsCategory.text
                 ) {
-                    mapMark.description = editTextTextDetailsDescription.text.toString()
+                    mapMark.description = editTextDetailsDescription.text.toString()
                     mapMark.category = textViewDetailsCategory.text.toString()
                     detailsViewModel.updateMapMarkDetails(mapMark)
                     Toast.makeText(
@@ -121,5 +112,30 @@ class DetailsFragment : Fragment() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun changeCategory(category: String) {
+        textViewDetailsCategory.text = category
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(CATEGORY, textViewDetailsCategory.text.toString())
+        outState.putString(DESCRIPTION, editTextDetailsDescription.text.toString())
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if (savedInstanceState!=null) {
+            textViewDetailsCategory.text = savedInstanceState.getString(CATEGORY)
+            editTextDetailsDescription.setText(savedInstanceState.getString(DESCRIPTION))
+        }
+    }
+
+    companion object {
+        const val PHOTO = "photo"
+        const val DATE = "date"
+        const val DESCRIPTION = "description"
+        const val CATEGORY = "category"
     }
 }

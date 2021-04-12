@@ -1,10 +1,8 @@
 package com.example.photomap.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
@@ -12,8 +10,6 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.photomap.App
 import com.example.photomap.R
-import com.example.photomap.db.MapMarkLocalDatabase
-import com.example.photomap.repository.MapMarkRepository
 import com.example.photomap.util.AppConnectionUtils
 import com.example.photomap.util.AppPermissionUtils
 import com.example.photomap.util.injectViewModel

@@ -57,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewDetailsCategory" />
 
     <EditText
-        android:id="@+id/editTextTextDetailsDescription"
+        android:id="@+id/editTextDetailsDescription"
         style="@style/CustomText"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
