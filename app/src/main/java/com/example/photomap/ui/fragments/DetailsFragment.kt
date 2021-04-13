@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -42,6 +43,13 @@ class DetailsFragment : Fragment(), ChangeCategoryDialog.ChangeCategoryClickList
 
         detailsViewModel = (activity as DetailsActivity).detailsViewModel
 
+        detailsViewModel.getCategoryState().observe(viewLifecycleOwner){
+            textViewDetailsCategory.text = it
+        }
+
+        detailsViewModel.getDescriptionState().observe(viewLifecycleOwner){
+            editTextDetailsDescription.setText(it)
+        }
         mapMark = this.arguments?.getSerializable(MAP_MARK_ITEM) as MapMark
         Log.d("myLog", mapMark.toString())
 
@@ -113,28 +121,19 @@ class DetailsFragment : Fragment(), ChangeCategoryDialog.ChangeCategoryClickList
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onStop() {
+        super.onStop()
+        detailsViewModel.saveDescriptionState(editTextDetailsDescription.text.toString())
+        detailsViewModel.saveCategoryState(textViewDetailsCategory.text.toString())
+    }
+
     override fun changeCategory(category: String) {
         textViewDetailsCategory.text = category
     }
-
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        outState.putString(CATEGORY, textViewDetailsCategory.text.toString())
-//        outState.putString(DESCRIPTION, editTextDetailsDescription.text.toString())
-//    }
-//
-//    override fun onActivityCreated(savedInstanceState: Bundle?) {
-//        super.onActivityCreated(savedInstanceState)
-//        if (savedInstanceState!=null) {
-//            textViewDetailsCategory.text = savedInstanceState.getString(CATEGORY)
-//            editTextDetailsDescription.setText(savedInstanceState.getString(DESCRIPTION))
-//        }
-//    }
 
     companion object {
         const val PHOTO = "photo"
         const val DATE = "date"
         const val DESCRIPTION = "description"
-        const val CATEGORY = "category"
     }
 }
