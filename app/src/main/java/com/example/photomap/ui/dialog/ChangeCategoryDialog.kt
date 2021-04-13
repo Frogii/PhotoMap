@@ -45,4 +45,9 @@ class ChangeCategoryDialog() : DialogFragment() {
             return ChangeCategoryDialog()
         }
     }
+
+    interface ChangeCategoryClickListener {
+
+        fun changeCategory(category: String)
+    }
 }

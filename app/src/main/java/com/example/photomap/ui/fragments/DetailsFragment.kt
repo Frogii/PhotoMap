@@ -13,7 +13,6 @@ import com.example.photomap.R
 import com.example.photomap.model.MapMark
 import com.example.photomap.ui.DetailsActivity
 import com.example.photomap.ui.DetailsViewModel
-import com.example.photomap.ui.dialog.ChangeCategoryClickListener
 import com.example.photomap.ui.dialog.ChangeCategoryDialog
 import com.example.photomap.util.Constants.CATEGORY_DIALOG_TAG
 import com.example.photomap.util.Constants.EMPTY_ACTION_BAR_TITLE
@@ -21,7 +20,7 @@ import com.example.photomap.util.Constants.MAP_MARK_ITEM
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
-class DetailsFragment : Fragment(), ChangeCategoryClickListener {
+class DetailsFragment : Fragment(), ChangeCategoryDialog.ChangeCategoryClickListener {
 
     private lateinit var detailsViewModel: DetailsViewModel
     private lateinit var mapMark: MapMark
@@ -118,19 +117,19 @@ class DetailsFragment : Fragment(), ChangeCategoryClickListener {
         textViewDetailsCategory.text = category
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(CATEGORY, textViewDetailsCategory.text.toString())
-        outState.putString(DESCRIPTION, editTextDetailsDescription.text.toString())
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        if (savedInstanceState!=null) {
-            textViewDetailsCategory.text = savedInstanceState.getString(CATEGORY)
-            editTextDetailsDescription.setText(savedInstanceState.getString(DESCRIPTION))
-        }
-    }
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//        outState.putString(CATEGORY, textViewDetailsCategory.text.toString())
+//        outState.putString(DESCRIPTION, editTextDetailsDescription.text.toString())
+//    }
+//
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//        if (savedInstanceState!=null) {
+//            textViewDetailsCategory.text = savedInstanceState.getString(CATEGORY)
+//            editTextDetailsDescription.setText(savedInstanceState.getString(DESCRIPTION))
+//        }
+//    }
 
     companion object {
         const val PHOTO = "photo"

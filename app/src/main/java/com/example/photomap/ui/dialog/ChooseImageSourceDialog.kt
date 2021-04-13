@@ -8,6 +8,11 @@ import android.provider.MediaStore
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.photomap.R
+import com.example.photomap.util.Constants
+import com.example.photomap.util.Constants.LONG_CLICK_REQUEST_CODE_IMAGE_PICK
+import com.example.photomap.util.Constants.LONG_CLICK_REQUEST_CODE_TAKE_PHOTO
+import com.example.photomap.util.Constants.MY_LOCATION_REQUEST_CODE_IMAGE_PICK
+import com.example.photomap.util.Constants.MY_LOCATION_REQUEST_CODE_TAKE_PHOTO
 
 class ChooseImageSourceDialog() : DialogFragment() {
 
@@ -19,32 +24,25 @@ class ChooseImageSourceDialog() : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val createPhotoRequestCode = arguments?.getInt(CREATE_PHOTO_CODE)
-        val choosePhotoRequestCode = arguments?.getInt(CHOOSE_PHOTO_CODE)
+        var createPhotoRequestCode = MY_LOCATION_REQUEST_CODE_TAKE_PHOTO
+        var choosePhotoRequestCode = MY_LOCATION_REQUEST_CODE_IMAGE_PICK
+        arguments?.let {
+            if (it.getBoolean(CLICK)) {
+                createPhotoRequestCode = LONG_CLICK_REQUEST_CODE_TAKE_PHOTO
+                choosePhotoRequestCode = LONG_CLICK_REQUEST_CODE_IMAGE_PICK
+            }
+        }
         val sources = arrayOf(getString(R.string.gallery), getString(R.string.camera))
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getString(R.string.chose_photo_source))
             .setItems(sources) { dialog, which ->
                 when (which) {
                     0 -> {
-                        Intent(
-                            Intent.ACTION_PICK,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                        )
-                            .also {
-                                if (choosePhotoRequestCode != null) {
-                                    parentFragment?.startActivityForResult(
-                                        it,
-                                        choosePhotoRequestCode
-                                    )
-                                }
-                            }
+                        createPhotoClickListener?.getPhotoFromGallery(choosePhotoRequestCode)
                         dialog.dismiss()
                     }
                     1 -> {
-                        if (createPhotoRequestCode != null) {
-                            createPhotoClickListener?.createPhotoFile(createPhotoRequestCode)
-                        }
+                        createPhotoClickListener?.createPhotoFile(createPhotoRequestCode)
                         dialog.dismiss()
                     }
                 }
@@ -60,18 +58,22 @@ class ChooseImageSourceDialog() : DialogFragment() {
     companion object {
 
         fun getInstance(
-            createPhotoRequestCode: Int,
-            choosePhotoRequestCode: Int
+            longCLick: Boolean
         ): ChooseImageSourceDialog {
             val bundle = Bundle()
-            bundle.putInt(CREATE_PHOTO_CODE, createPhotoRequestCode)
-            bundle.putInt(CHOOSE_PHOTO_CODE, choosePhotoRequestCode)
+            bundle.putBoolean(CLICK, longCLick)
             val dialogFragment = ChooseImageSourceDialog()
             dialogFragment.arguments = bundle
             return dialogFragment
         }
 
-        const val CREATE_PHOTO_CODE = "createPhotoCode"
-        const val CHOOSE_PHOTO_CODE = "choosePhotoCode"
+        const val CLICK = "click"
+    }
+
+    interface CreatePhotoClickListener {
+
+        fun createPhotoFile(requestCode: Int)
+
+        fun getPhotoFromGallery(requestCode: Int)
     }
 }
