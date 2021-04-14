@@ -24,26 +24,22 @@ class ChooseImageSourceDialog() : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        var createPhotoRequestCode = MY_LOCATION_REQUEST_CODE_TAKE_PHOTO
-        var choosePhotoRequestCode = MY_LOCATION_REQUEST_CODE_IMAGE_PICK
-        arguments?.let {
-            if (it.getBoolean(CLICK)) {
-                createPhotoRequestCode = LONG_CLICK_REQUEST_CODE_TAKE_PHOTO
-                choosePhotoRequestCode = LONG_CLICK_REQUEST_CODE_IMAGE_PICK
-            }
-        }
+        val longCLick = arguments?.getBoolean(
+            LONG_CLICK)
         val sources = arrayOf(getString(R.string.gallery), getString(R.string.camera))
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getString(R.string.chose_photo_source))
             .setItems(sources) { dialog, which ->
-                when (which) {
-                    0 -> {
-                        createPhotoClickListener?.getPhotoFromGallery(choosePhotoRequestCode)
-                        dialog.dismiss()
-                    }
-                    1 -> {
-                        createPhotoClickListener?.createPhotoFile(createPhotoRequestCode)
-                        dialog.dismiss()
+                longCLick?.let {
+                    when (which) {
+                        0 -> {
+                            createPhotoClickListener?.getPhotoFromGallery(it)
+                            dialog.dismiss()
+                        }
+                        1 -> {
+                            createPhotoClickListener?.createPhotoFile(it)
+                            dialog.dismiss()
+                        }
                     }
                 }
             }
@@ -61,19 +57,19 @@ class ChooseImageSourceDialog() : DialogFragment() {
             longCLick: Boolean
         ): ChooseImageSourceDialog {
             val bundle = Bundle()
-            bundle.putBoolean(CLICK, longCLick)
+            bundle.putBoolean(LONG_CLICK, longCLick)
             val dialogFragment = ChooseImageSourceDialog()
             dialogFragment.arguments = bundle
             return dialogFragment
         }
 
-        const val CLICK = "click"
+        private const val LONG_CLICK = "longClick"
     }
 
     interface CreatePhotoClickListener {
 
-        fun createPhotoFile(requestCode: Int)
+        fun createPhotoFile(longClick: Boolean)
 
-        fun getPhotoFromGallery(requestCode: Int)
+        fun getPhotoFromGallery(longClick: Boolean)
     }
 }

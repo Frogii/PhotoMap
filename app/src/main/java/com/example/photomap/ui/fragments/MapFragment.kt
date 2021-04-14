@@ -278,7 +278,7 @@ class MapFragment : AbstractMapFragment(), OnMapReadyCallback,
         }
     }
 
-    override fun createPhotoFile(requestCode: Int) {
+    override fun createPhotoFile(longClick: Boolean) {
         photoFile = AppCameraUtils.getPhotoFile(
             AppCameraUtils.createPhotoName(requireActivity()),
             requireActivity()
@@ -292,17 +292,23 @@ class MapFragment : AbstractMapFragment(), OnMapReadyCallback,
         }
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {
             it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
-            startActivityForResult(it, requestCode)
+            startActivityForResult(
+                it,
+                if (longClick) LONG_CLICK_REQUEST_CODE_TAKE_PHOTO else MY_LOCATION_REQUEST_CODE_TAKE_PHOTO
+            )
         }
     }
 
-    override fun getPhotoFromGallery(requestCode: Int) {
+    override fun getPhotoFromGallery(longClick: Boolean) {
         Intent(
             Intent.ACTION_PICK,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         )
             .also {
-                startActivityForResult(it, requestCode)
+                startActivityForResult(
+                    it,
+                    if (longClick) LONG_CLICK_REQUEST_CODE_IMAGE_PICK else MY_LOCATION_REQUEST_CODE_IMAGE_PICK
+                )
             }
     }
 
