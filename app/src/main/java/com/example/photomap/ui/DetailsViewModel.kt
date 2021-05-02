@@ -1,6 +1,7 @@
 package com.example.photomap.ui
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.photomap.model.MapMark
@@ -11,6 +12,25 @@ import kotlinx.coroutines.launch
 
 
 class DetailsViewModel(private val mapMarkRepository: MapMarkRepository) : ViewModel() {
+
+    private val categoryState = MutableLiveData<String>()
+    private val descriptionState = MutableLiveData<String>()
+
+    fun saveCategoryState(content: String) {
+        categoryState.postValue(content)
+    }
+
+    fun saveDescriptionState(content: String) {
+        descriptionState.postValue(content)
+    }
+
+    fun getCategoryState(): MutableLiveData<String> {
+        return categoryState
+    }
+
+    fun getDescriptionState(): MutableLiveData<String> {
+        return descriptionState
+    }
 
     fun updateMapMarkDetails(mapMark: MapMark) {
         val mapOfMapMark = mutableMapOf<String, Any>()

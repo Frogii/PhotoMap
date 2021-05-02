@@ -1,16 +1,15 @@
 package com.example.photomap.ui
 
 import android.os.Bundle
-import android.util.Log
+import android.transition.TransitionInflater
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.example.photomap.App
 import com.example.photomap.R
-import com.example.photomap.repository.MapMarkRepository
 import com.example.photomap.util.Constants.MAP_MARK_ITEM
+import com.example.photomap.util.injectViewModel
 import javax.inject.Inject
 
 class DetailsActivity : AppCompatActivity() {
@@ -25,10 +24,9 @@ class DetailsActivity : AppCompatActivity() {
         setTheme(R.style.TransparentTheme)
         App.daggerAppComponent.inject(this)
         setContentView(R.layout.activity_details)
+        window.sharedElementReturnTransition = TransitionInflater.from(this).inflateTransition(R.transition.change_bounds)
 
-        detailsViewModel = ViewModelProvider(
-            this, detailsViewModelProviderFactory
-        ).get(DetailsViewModel::class.java)
+        detailsViewModel = injectViewModel(detailsViewModelProviderFactory)
         val mapMark = intent.getSerializableExtra(MAP_MARK_ITEM)
         navController = Navigation.findNavController(this, R.id.detailsNavHostFragment)
         //WOW it works... sending data to fragment from activity by using navigation

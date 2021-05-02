@@ -42,7 +42,11 @@ class TimelineRecAdapter(private val clickableRecyclerItem: ClickableRecyclerIte
             textViewCategory.text = markList[position].category
 
             this.setOnClickListener {
-                clickableRecyclerItem.onItemClick(markList[position])
+                clickableRecyclerItem.onItemClick(markList[position], holder.itemView.imageViewMapPhoto)
+            }
+
+            imageViewDelete.setOnClickListener {
+                clickableRecyclerItem.onDeleteClick(markList[position])
             }
         }
     }

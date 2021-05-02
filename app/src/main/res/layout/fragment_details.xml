@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="240dp"
         android:scaleType="centerCrop"
+        android:transitionName="photo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -27,6 +28,7 @@
         android:drawablePadding="@dimen/details_drawable_padding_text"
         android:gravity="center"
         android:text="@string/default_photo_date"
+        android:transitionName="date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewDetailsPhoto" />
 
@@ -55,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewDetailsCategory" />
 
     <EditText
-        android:id="@+id/editTextTextDetailsDescription"
+        android:id="@+id/editTextDetailsDescription"
         style="@style/CustomText"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
@@ -65,6 +67,7 @@
         android:inputType="textMultiLine"
         android:text="@string/default_photo_description"
         android:textAlignment="inherit"
+        android:transitionName="description"
         app:layout_constraintStart_toEndOf="@+id/imageViewDescription"
         app:layout_constraintTop_toBottomOf="@+id/textViewDetailsCategory" />
 

@@ -1,18 +1,19 @@
 package com.example.photomap.ui.fragments
 
-import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.example.photomap.R
 import com.example.photomap.model.MapMark
@@ -20,8 +21,7 @@ import com.example.photomap.ui.DetailsActivity
 import com.example.photomap.ui.LoginActivity
 import com.example.photomap.ui.MainActivity
 import com.example.photomap.ui.MainViewModel
-import com.example.photomap.ui.dialog.ChoosePhotoDialog
-import com.example.photomap.ui.dialog.DialogClickListener
+import com.example.photomap.ui.dialog.ChooseImageSourceDialog
 import com.example.photomap.util.AppCameraUtils
 import com.example.photomap.util.AppMapUtils
 import com.example.photomap.util.AppPermissionUtils
@@ -46,7 +46,8 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 
-class MapFragment : Fragment(), OnMapReadyCallback {
+class MapFragment : AbstractMapFragment(), OnMapReadyCallback,
+    ChooseImageSourceDialog.CreatePhotoClickListener {
 
     private var mapViewBundle: Bundle? = null
     private lateinit var map: GoogleMap
@@ -70,13 +71,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         auth = FirebaseAuth.getInstance()
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_map, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapViewBundle = savedInstanceState?.getBundle(MAP_VIEW_BUNDLE_KEY)
@@ -87,92 +81,62 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapView.getMapAsync(this)
 
         floatingButtonPhoto.setOnClickListener {
-            ChoosePhotoDialog(activity as MainActivity, object : DialogClickListener {
-                override fun chooseImage() {
-                    Intent(
-                        Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                    )
-                        .also {
-                            startActivityForResult(it, MY_LOCATION_REQUEST_CODE_IMAGE_PICK)
-                        }
-                }
-
-                override fun takePhoto() {
-                    photoFile = activity?.let { activity ->
-                        AppCameraUtils.getPhotoFile(
-                            AppCameraUtils.createPhotoName(activity),
-                            activity
-                        )
-                    }
-                    val fileProvider = photoFile?.let { file ->
-                        activity?.let { activity ->
-                            FileProvider.getUriForFile(
-                                activity,
-                                FILE_PROVIDER_PATH,
-                                file
-                            )
-                        }
-                    }
-                    Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {
-                        it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
-                        startActivityForResult(it, MY_LOCATION_REQUEST_CODE_TAKE_PHOTO)
-                    }
-                }
-            }).show()
+            ChooseImageSourceDialog.getInstance(false)
+                .show(childFragmentManager, MY_LOCATION_DIALOG)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        //taking photo from camera
-        if (requestCode == MY_LOCATION_REQUEST_CODE_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-            photoUri = Uri.fromFile(photoFile)
-            photoFile?.name?.let {
-                mainViewModel.uploadMapMark(
-                    photoUri, it.substring(0, 22),
-                    myLocation.latitude,
-                    myLocation.longitude
-                )
-            }
-        } else if (requestCode == LONG_CLICK_REQUEST_CODE_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-            photoUri = Uri.fromFile(photoFile)
-            photoFile?.name?.let {
-                mainViewModel.uploadMapMark(
-                    photoUri, it.substring(0, 22),
-                    longClickPhotoLatLng.latitude,
-                    longClickPhotoLatLng.longitude
-                )
-            }
-        } else if (requestCode == MY_LOCATION_REQUEST_CODE_IMAGE_PICK) {
-            //taking photo from gallery
-            data?.data?.let {
-                Log.d("myLog", "taking photo from gallery")
-                val file = it
-                val fileName =
-                    this.activity?.let { activity -> AppCameraUtils.createPhotoName(activity) }
-                if (fileName != null) {
+        when (requestCode) {
+            MY_LOCATION_REQUEST_CODE_TAKE_PHOTO -> {
+                photoUri = Uri.fromFile(photoFile)
+                photoFile?.name?.let {
                     mainViewModel.uploadMapMark(
-                        file,
-                        fileName,
+                        photoUri, it.substring(0, 22),
                         myLocation.latitude,
                         myLocation.longitude
                     )
                 }
             }
-        } else if (requestCode == LONG_CLICK_REQUEST_CODE_IMAGE_PICK) {
-            data?.data?.let {
-                Log.d("myLog", "Long click taking photo from gallery")
-                val file = it
-                val fileName =
-                    this.activity?.let { activity -> AppCameraUtils.createPhotoName(activity) }
-                if (fileName != null) {
+            LONG_CLICK_REQUEST_CODE_TAKE_PHOTO -> {
+                photoUri = Uri.fromFile(photoFile)
+                photoFile?.name?.let {
                     mainViewModel.uploadMapMark(
-                        file,
-                        fileName,
+                        photoUri, it.substring(0, 22),
                         longClickPhotoLatLng.latitude,
                         longClickPhotoLatLng.longitude
                     )
+                }
+            }
+            MY_LOCATION_REQUEST_CODE_IMAGE_PICK -> {
+                data?.data?.let {
+                    val file = it
+                    val fileName =
+                        this.activity?.let { activity -> AppCameraUtils.createPhotoName(activity) }
+                    if (fileName != null) {
+                        mainViewModel.uploadMapMark(
+                            file,
+                            fileName,
+                            myLocation.latitude,
+                            myLocation.longitude
+                        )
+                    }
+                }
+            }
+            LONG_CLICK_REQUEST_CODE_IMAGE_PICK -> {
+                data?.data?.let {
+                    val file = it
+                    val fileName =
+                        this.activity?.let { activity -> AppCameraUtils.createPhotoName(activity) }
+                    if (fileName != null) {
+                        mainViewModel.uploadMapMark(
+                            file,
+                            fileName,
+                            longClickPhotoLatLng.latitude,
+                            longClickPhotoLatLng.longitude
+                        )
+                    }
                 }
             }
         }
@@ -198,41 +162,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        mapView?.onSaveInstanceState(outState)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mapView.onResume()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mapView.onStart()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mapView.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mapView.onStop()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        mapView.onLowMemory()
-    }
-
-    companion object {
-        private const val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
-    }
-
-
     override fun onMapReady(p0: GoogleMap) {
         val zoomLevel = 12f
         map = p0
@@ -240,57 +169,55 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             map.isMyLocationEnabled = true
             getMyLocation()
         }
-        mainViewModel.followButtonLiveDataState.observe(viewLifecycleOwner, {
+        mainViewModel.followButtonLiveDataState.observe(viewLifecycleOwner) {
             followButtonState = it
-            activity?.let { activity ->
-                if (followButtonState) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        while (followButtonState) {
-                            fusedLocationClient.lastLocation
-                                .addOnSuccessListener { location: Location? ->
-                                    location?.let {
-                                        myLocation = location
-                                        map.animateCamera(
-                                            CameraUpdateFactory.newLatLngZoom(
-                                                LatLng(
-                                                    location.latitude,
-                                                    location.longitude
-                                                ), zoomLevel
-                                            )
+            if (followButtonState) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    while (followButtonState) {
+                        fusedLocationClient.lastLocation
+                            .addOnSuccessListener { location: Location? ->
+                                location?.let {
+                                    myLocation = location
+                                    map.animateCamera(
+                                        CameraUpdateFactory.newLatLngZoom(
+                                            LatLng(
+                                                location.latitude,
+                                                location.longitude
+                                            ), zoomLevel
                                         )
-                                    }
+                                    )
                                 }
-                            delay(5000)
-                        }
+                            }
+                        delay(5000)
                     }
-                    AppMapUtils.changeMapUiState(map, followButtonState)
-                    floatingButtonFollow.backgroundTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                activity,
-                                R.color.floating_button_enable
-                            )
-                        )
-                } else {
-                    AppMapUtils.changeMapUiState(map, followButtonState)
-                    floatingButtonFollow.backgroundTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                activity,
-                                R.color.floating_button_disable
-                            )
-                        )
                 }
+                AppMapUtils.changeMapUiState(map, followButtonState)
+                floatingButtonFollow.backgroundTintList =
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.floating_button_enable
+                        )
+                    )
+            } else {
+                AppMapUtils.changeMapUiState(map, followButtonState)
+                floatingButtonFollow.backgroundTintList =
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.floating_button_disable
+                        )
+                    )
             }
-        })
+        }
         map.uiSettings.isMyLocationButtonEnabled = false
-        mainViewModel.dataList.observe(viewLifecycleOwner, { it ->
+        mainViewModel.dataList.observe(viewLifecycleOwner) { it ->
             listOfMapMarks = it
             for (mapMark in listOfMapMarks) {
                 map.addMarker(AppMapUtils.setMarkerOptions(mapMark, this.requireContext()))
                 mapOfMapMarks[mapMark.name] = mapMark
             }
-        })
+        }
 
         map.setInfoWindowAdapter(this.activity?.let {
             AppMapUtils.CustomMapInfoWindowAdapter(
@@ -301,41 +228,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         map.setOnMapLongClickListener { latLng ->
             longClickPhotoLatLng = LatLng(latLng.latitude, latLng.longitude)
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(longClickPhotoLatLng, zoomLevel))
-            ChoosePhotoDialog(activity as MainActivity, object : DialogClickListener {
-                override fun chooseImage() {
-                    Intent(
-                        Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                    )
-                        .also {
-                            startActivityForResult(it, LONG_CLICK_REQUEST_CODE_IMAGE_PICK)
-                        }
-                }
-
-                override fun takePhoto() {
-                    photoFile = this@MapFragment.activity?.let { activity ->
-                        AppCameraUtils.getPhotoFile(
-                            AppCameraUtils.createPhotoName(activity),
-                            activity
-                        )
-                    }
-                    val fileProvider = photoFile?.let { file ->
-                        this@MapFragment.activity?.let { activity ->
-                            FileProvider.getUriForFile(
-                                activity,
-                                FILE_PROVIDER_PATH,
-                                file
-                            )
-                        }
-                    }
-                    Intent(
-                        Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    ).also {
-                        it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
-                        startActivityForResult(it, LONG_CLICK_REQUEST_CODE_TAKE_PHOTO)
-                    }
-                }
-            }).show()
+            ChooseImageSourceDialog.getInstance(true)
+                .show(childFragmentManager, LONG_PRESS_DIALOG)
             mainViewModel.getAllMarksFromFirebase()
         }
 
@@ -382,5 +276,44 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     }
                 }
         }
+    }
+
+    override fun createPhotoFile(longClick: Boolean) {
+        photoFile = AppCameraUtils.getPhotoFile(
+            AppCameraUtils.createPhotoName(requireActivity()),
+            requireActivity()
+        )
+        val fileProvider = photoFile?.let { file ->
+            FileProvider.getUriForFile(
+                requireActivity(),
+                FILE_PROVIDER_PATH,
+                file
+            )
+        }
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {
+            it.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
+            startActivityForResult(
+                it,
+                if (longClick) LONG_CLICK_REQUEST_CODE_TAKE_PHOTO else MY_LOCATION_REQUEST_CODE_TAKE_PHOTO
+            )
+        }
+    }
+
+    override fun getPhotoFromGallery(longClick: Boolean) {
+        Intent(
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
+            .also {
+                startActivityForResult(
+                    it,
+                    if (longClick) LONG_CLICK_REQUEST_CODE_IMAGE_PICK else MY_LOCATION_REQUEST_CODE_IMAGE_PICK
+                )
+            }
+    }
+
+    companion object {
+        const val MY_LOCATION_DIALOG = "myLocationDialog"
+        const val LONG_PRESS_DIALOG = "longPressDialog"
     }
 }

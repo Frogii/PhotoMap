@@ -22,4 +22,7 @@
     <string name="default_photo_date">21.21.2121</string>
     <string name="action_log_out">Log out</string>
     <string name="login_error_message">Connection error</string>
+    <string name="chose_photo_source">Choose source</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
 </resources>

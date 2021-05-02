@@ -1,6 +1,7 @@
 package com.example.photomap.ui.fragments
 
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -27,6 +28,8 @@ class PhotoFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        sharedElementEnterTransition = TransitionInflater.from(this.context).inflateTransition(R.transition.change_bounds)
+        sharedElementReturnTransition = TransitionInflater.from(this.context).inflateTransition(R.transition.change_bounds)
         return inflater.inflate(R.layout.fragment_photo, container, false)
     }
 

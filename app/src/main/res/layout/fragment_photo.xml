@@ -11,6 +11,7 @@
         android:id="@+id/imageViewFullPhoto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:transitionName="photo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,6 +29,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/default_photo_description"
+        android:transitionName="description"
         app:layout_constraintBottom_toTopOf="@+id/textViewFullPhotoDate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -40,6 +42,7 @@
         android:layout_marginStart="@dimen/photo_start_margin_text"
         android:layout_marginBottom="16dp"
         android:text="@string/default_photo_date"
+        android:transitionName="date"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
